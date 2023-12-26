@@ -1,0 +1,14 @@
+<form>
+	<p>
+		<span color="header" font="header">Zähler Wasser</span>
+	</p>
+
+  <p>
+    Hier werden die einzelnen Zählerstände aufgelistet.
+  </p>
+  	
+	<p>
+	  Mit der rechten Maustaste öffnet sich ein Menü und man kann einen neuen Eintrag erzeugen, einen bestehenden Eintrag löschen oder verändern.
+	  Man kann auch eine Reihen von Schätzungen für mehrere Monate anlegen.   
+	</p>
+</form>

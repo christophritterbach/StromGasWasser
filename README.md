@@ -1,2 +1,2 @@
-# StromGasWasser
-Plugin für Hibiscus für die Verwaltung der Abschläge, Zählerstände und Kosten
+# jameica.example
+Jameica Beispiel-Plugin

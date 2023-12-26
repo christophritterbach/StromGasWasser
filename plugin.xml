@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<plugin xmlns="http://www.willuhn.de/schema/jameica-plugin"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.willuhn.de/schema/jameica-plugin http://www.willuhn.de/schema/jameica-plugin-1.5.xsd"
+        name="jameica.energie" version="1.2.0" class="de.ritterbach.jameica.energie.StromWasserGasPlugin">
+
+  <description>Energie for Jameica</description>
+  <url>https://www.example.com/releases/my-plugin.zip</url>
+  <homepage validate="true">https://www.example.com</homepage>
+  <license>GPL - http://www.gnu.org/copyleft/gpl.html</license>
+
+  <!-- Define dependencies to jameica or other plugins -->
+  <requires jameica="1.10+">
+    <!--  <import plugin="hibiscus" version="1.12+" required="false" /> //-->
+  </requires>
+
+  <!-- Define regex wildcards for the classes and jars the classfinder should load -->
+  <classfinder>
+    <include>jameica\.energie\.jar</include>
+    <include>.*\.class</include>
+  </classfinder>
+
+  <!-- The content of the following tag is displayed in the menu bar. //-->
+  <menu>
+
+    <!-- 
+      
+      Every item must have a "name" and an "action" attribute.
+      the class defined in the attribute "action" has to be a java class name
+      which implements from de.willuhn.jameica.gui.Action.
+      
+      Additionally you can specify a shortcut using "CTRL" or "ALT"
+      as modifier key followed by "+" and a single key.
+      
+      Hint: You can create submenus by cascading "item" tags
+      
+      <item name="entry name"
+            action="com.foo.bar.gui.actions.ExampleAction"
+            shortcut="CTRL+E"/>
+      
+    //-->
+    <item name="Energie">
+
+      <item name="About" action="de.ritterbach.jameica.energie.gui.action.About" />
+    </item>
+  </menu>
+
+  <!-- the content of this tag will appear within the navigation tree on the left hand //-->
+  <navigation>
+
+    <!-- Same procedure as in the menu tag //-->
+
+    <item name="Energie" icon-close="folder.png" icon-open="folder-open.png" action="de.ritterbach.jameica.energie.gui.action.Welcome">
+      <item id="strom.navi"               name="Strom"      icon-close="strom_1.png"     icon-open="strom.png">
+        <item id="strom.navi.kosten"      name="Kosten"     icon-close="kosten.png"        action="de.ritterbach.jameica.energie.gui.action.StromKostenAction" />
+        <item id="strom.navi.abschlag"    name="Abschlag"   icon-close="abschlag.png"      action="de.ritterbach.jameica.energie.gui.action.StromAbschlagAction" />
+        <item id="strom.navi.zaehler"     name="Zaehler"    icon-close="zaehler.png"       action="de.ritterbach.jameica.energie.gui.action.StromZaehlerAction" />
+        <item id="strom.navi.auswertung"  name="Auswertung" icon-close="auswertung.png"    action="de.ritterbach.jameica.energie.gui.action.StromAuswertungAction" />
+      </item>
+      <item id="wasser.navi"              name="Wasser"     icon-close="wasser_1.png"    icon-open="wasser.png">
+        <item id="wasser.navi.kosten"     name="Kosten"     icon-close="kosten.png"        action="de.ritterbach.jameica.energie.gui.action.WasserKostenAction" />
+        <item id="wasser.navi.abschlag"   name="Abschlag"   icon-close="abschlag.png"      action="de.ritterbach.jameica.energie.gui.action.WasserAbschlagAction" />
+        <item id="wasser.navi.zaehler"    name="Zaehler"    icon-close="zaehler.png"       action="de.ritterbach.jameica.energie.gui.action.WasserZaehlerAction" />
+        <item id="wasser.navi.auswertung" name="Auswertung" icon-close="auswertung.png"    action="de.ritterbach.jameica.energie.gui.action.WasserAuswertungAction" />
+      </item>
+      <item id="gas.navi"                 name="Gas"        icon-close="gas_1.png"       icon-open="gas.png">
+        <item id="gas.navi.kosten"        name="Kosten"     icon-close="kosten.png"        action="de.ritterbach.jameica.energie.gui.action.GasKostenAction" />
+        <item id="gas.navi.abschlag"      name="Abschlag"   icon-close="abschlag.png"      action="de.ritterbach.jameica.energie.gui.action.GasAbschlagAction" />
+        <item id="gas.navi.zaehler"       name="Zaehler"    icon-close="zaehler.png"       action="de.ritterbach.jameica.energie.gui.action.GasZaehlerAction" />
+        <item id="gas.navi.auswertung"    name="Auswertung" icon-close="auswertung.png"    action="de.ritterbach.jameica.energie.gui.action.GasAuswertungAction" />
+      </item>
+    </item>
+  </navigation>
+
+  <!--
+    Here you can define your service classes. This is typically a
+    database connection. You can list more than one service in this
+    section. By using the depends attribute you can define a startup order
+    for your services. Example:
+    
+    <services>
+    <service name="base-service" depends="" autostart="true" class="BaseService" />
+    <service name="extended-service" depends="base-service" autostart="true" class="ExtendedService" />
+    </services>
+    
+    //-->
+
+  <services>
+    <service name="energiedatabase" depends="" autostart="true" class="de.ritterbach.jameica.energie.rmi.EnergieDBService" />
+  </services>
+</plugin>
+

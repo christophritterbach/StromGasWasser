@@ -1,0 +1,10 @@
+<form>
+	<p>
+		<span color="header" font="header">Willkommen</span>
+	</p>
+
+	<p>
+	  Das ist ein Plugin für die Erfassung von Zählerständen (Gas, Wasser, Strom), die man mit den Abschlagszahlungen und den
+	  Kosten auswerten kann.
+	</p>
+</form>
