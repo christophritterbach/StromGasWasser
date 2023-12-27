@@ -1,17 +1,19 @@
 package de.ritterbach.jameica.energie.gui.views;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.rmi.RemoteException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import de.ritterbach.jameica.energie.Settings;
 import de.ritterbach.jameica.energie.StromWasserGasPlugin;
+import de.ritterbach.jameica.energie.rmi.KostenStrom;
+import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.datasource.rmi.ResultSetExtractor;
 import de.willuhn.jameica.gui.AbstractView;
@@ -29,45 +31,31 @@ public class StromAuswertung extends AbstractView {
 	static final long ONE_HOUR = (60 * 60 * 1000L);
 	static final long ONE_DAY = ONE_HOUR * 24L;
 	static final BigDecimal einJahr = new BigDecimal(365);
-	private final static I18N i18n = Application.getPluginLoader().getPlugin(StromWasserGasPlugin.class).getResources().getI18N();
+	private final static I18N i18n = Application.getPluginLoader().getPlugin(StromWasserGasPlugin.class).getResources()
+			.getI18N();
 	private TablePart tableAuswertung = null;
+	private KostenStrom kosten = null;
+	private BigDecimal summe = BigDecimal.ZERO;
+	private BigDecimal letzterZaehler = BigDecimal.ZERO;
+	private Date letztesDatum;
 
 	private ResultSetExtractor rse = new ResultSetExtractor() {
 		@Override
 		public Object extract(ResultSet rs) throws RemoteException, SQLException {
 			List<Auswertung> liste = new ArrayList<Auswertung>();
-			Date letztesDatum = new Date();
-			BigDecimal summe = BigDecimal.ZERO;
-			BigDecimal grundpreis = BigDecimal.ZERO;
-			BigDecimal arbeitspreis = BigDecimal.ZERO;
-			BigDecimal letzterZaehler = BigDecimal.ZERO;
+			if (kosten.isRechnungsabschluss())
+				summe = BigDecimal.ZERO;
 			while (rs.next()) {
 				Auswertung zaehlerElement = new Auswertung();
 				Date datum = rs.getDate("datum");
 				zaehlerElement.setDatum(datum);
-				BigDecimal gp = rs.getBigDecimal("grundpreis");
-				if (!rs.wasNull()) {
-					letztesDatum = datum;
-					grundpreis = gp;
-					BigDecimal ap = rs.getBigDecimal("arbeitspreis");
-					if (!rs.wasNull()) {
-						arbeitspreis = ap;
-					}
-					Integer rechnungsabschluss = rs.getInt("rechnungsabschluss");
-					if (rs.wasNull()) {
-						rechnungsabschluss = 0;
-					}
-					if (rechnungsabschluss > 0) {
-						Logger.info(getHelp());
-						summe = BigDecimal.ZERO;
-					}
-				}
+				zaehlerElement.setNotiz(rs.getString("notiz"));
 				Integer schaetzung = rs.getInt("schaetzung");
 				if (!rs.wasNull()) {
 					BigDecimal ableseWert = rs.getBigDecimal("ablese_wert");
 					BigDecimal verbrauch = rs.getBigDecimal("verbrauch");
-					Integer zaehlerAus = rs.getInt("zaehler_aus");
-					Integer zaehlerEin = rs.getInt("zaehler_ein");
+					Integer zaehlerAus = rs.getInt("zaehlerwechsel_aus");
+					Integer zaehlerEin = rs.getInt("zaehlerwechsel_ein");
 					if (schaetzung == 1 && zaehlerAus == 0 && zaehlerEin == 0) {
 						ableseWert = letzterZaehler.add(verbrauch);
 					} else {
@@ -86,13 +74,13 @@ public class StromAuswertung extends AbstractView {
 					}
 					Long anzahlTage = (datum.getTime() - letztesDatum.getTime() + ONE_HOUR) / ONE_DAY;
 					zaehlerElement.setAnzahlTage(anzahlTage);
-					BigDecimal anteilGrund = grundpreis.multiply(new BigDecimal(anzahlTage)).divide(einJahr, 2,
-							RoundingMode.HALF_UP);
+					BigDecimal anteilGrund = kosten.getGrundpreis().multiply(new BigDecimal(anzahlTage)).divide(einJahr,
+							2, RoundingMode.HALF_UP);
 					zaehlerElement.setGrundpreisAnteil(anteilGrund);
-					BigDecimal ap = verbrauch.multiply(arbeitspreis);
+					BigDecimal ap = verbrauch.multiply(kosten.getArbeitspreis());
 					zaehlerElement.setArbeitspreis(ap);
 					zaehlerElement.setGenutzt(anteilGrund.add(ap));
-					summe = summe.subtract(zaehlerElement.getGenutzt());
+					summe = summe.add(zaehlerElement.getGenutzt());
 					zaehlerElement.setSumme(summe);
 					letztesDatum = datum;
 					letzterZaehler = ableseWert;
@@ -114,17 +102,43 @@ public class StromAuswertung extends AbstractView {
 		GUI.getView().setTitle(Settings.i18n().tr("Strom Auswertung"));
 
 		DBService service = Settings.getDBService();
-		List<Auswertung> auswertung = (List<Auswertung>) service.execute(
-				"WITH kosten AS (SELECT id, gueltig_von, gueltig_bis, grundpreis, arbeitspreis FROM kosten_strom WHERE abgerechnet = 0) "
-						+ "SELECT kosten_strom.gueltig_von AS datum, kosten_strom.grundpreis, kosten_strom.arbeitspreis, NULL AS ablese_wert, NULL AS verbrauch, NULL AS schaetzung, 0 AS zaehler_aus, 0 AS zaehler_ein, NULL AS abschlag_betrag, kosten_strom.rechnungsabschluss "
-						+ "FROM kosten_strom JOIN kosten ON kosten.id = kosten_strom.id "
-						+ "UNION SELECT ablese_datum AS datum, NULL, NULL, ablese_wert, verbrauch, schaetzung, zaehlerwechsel_aus, zaehlerwechsel_ein, NULL AS abschlag_betrag, 0 "
-						+ "FROM zaehler_strom JOIN kosten ON ablese_datum >= kosten.gueltig_von AND ablese_datum <= kosten.gueltig_bis "
-						+ "UNION SELECT abschlag_datum AS datum, NULL, NULL, NULL, NULL, NULL, 0, 0, abschlag_betrag, 0 "
-						+ "FROM abschlag_strom JOIN kosten ON abschlag_datum >= kosten.gueltig_von AND abschlag_datum <= kosten.gueltig_bis "
-						+ "ORDER BY 1, 8",
-				null, this.rse);
-
+		DBIterator kostenListe = service.createList(KostenStrom.class);
+		kostenListe.addFilter("abgerechnet = 0");
+		kostenListe.setOrder("order by gueltig_von");
+		List<Auswertung> auswertung = new ArrayList<>();
+		while (kostenListe.hasNext()) {
+			// Start der Abrechnung
+			this.kosten = (KostenStrom) kostenListe.next();
+			String notiz = this.kosten.getNotiz();
+			if (this.kosten.isRechnungsabschluss()) {
+				this.summe = BigDecimal.ZERO;
+				if (notiz == null || notiz.length() < 1)
+					notiz = "";
+				else
+					notiz += ". ";
+				notiz = notiz + i18n.tr("Neue Abrechnungsperiode");
+			}
+			auswertung.add(new Auswertung(this.kosten.getGueltigVon(), summe, notiz));
+			this.letztesDatum = this.kosten.getGueltigVon();
+			// Alle Abschläge und Zählerstände
+			auswertung.addAll((List<Auswertung>) service.execute(
+					"SELECT abschlag_datum AS datum, 1 as sortierung, NULL as ablese_wert, NULL as verbrauch, NULL as schaetzung, 0 as zaehlerwechsel_aus, 0 AS zaehlerwechsel_ein, abschlag_betrag, notiz "
+							+ "FROM abschlag_strom " + "WHERE abschlag_datum >= ? AND abschlag_datum <= ? " + "UNION "
+							+ "SELECT ablese_datum AS datum, 2 as sortierung, ablese_wert, verbrauch, schaetzung, zaehlerwechsel_aus, zaehlerwechsel_ein, NULL AS abschlag_betrag, notiz "
+							+ "FROM zaehler_strom " + "WHERE ablese_datum >= ? AND ablese_datum <= ? "
+							+ "ORDER BY 1, 2, 7",
+					new Date[] { this.kosten.getGueltigVon(), this.kosten.getGueltigBis(), this.kosten.getGueltigVon(),
+							this.kosten.getGueltigBis() },
+					this.rse));
+			// Alles bis zum Ende der Abrechnung
+			Logger.info("Gueltig bis: " + new SimpleDateFormat("dd.MM.yyyy").format(this.kosten.getGueltigBis()));
+			Long anzahlTage = (this.kosten.getGueltigBis().getTime() - letztesDatum.getTime() + ONE_HOUR) / ONE_DAY;
+			BigDecimal anteilGrund = kosten.getGrundpreis().multiply(new BigDecimal(anzahlTage)).divide(einJahr, 2,
+					RoundingMode.HALF_UP);
+			this.summe = this.summe.add(anteilGrund);
+			auswertung.add(new Auswertung(this.kosten.getGueltigBis(), anzahlTage, anteilGrund, this.summe,
+					this.kosten.getNotiz()));
+		}
 		this.tableAuswertung = new TablePart(auswertung, null);
 		this.tableAuswertung.addColumn(i18n.tr("Datum"), "datum", new DateFormatter());
 		this.tableAuswertung.addColumn(i18n.tr("Anzahl_Tage"), "anzahlTage");
@@ -135,82 +149,12 @@ public class StromAuswertung extends AbstractView {
 		this.tableAuswertung.addColumn(i18n.tr("Gezahlt"), "gezahlt", new CurrencyFormatter(Settings.CURRENCY, null));
 		this.tableAuswertung.addColumn(i18n.tr("Genutzt"), "genutzt", new CurrencyFormatter(Settings.CURRENCY, null));
 		this.tableAuswertung.addColumn(i18n.tr("Summe"), "summe", new CurrencyFormatter(Settings.CURRENCY, null));
+		this.tableAuswertung.addColumn(i18n.tr("Notiz"), "notiz");
 		this.tableAuswertung.setRememberOrder(true);
 		this.tableAuswertung.setRememberColWidths(true);
 		this.tableAuswertung.paint(getParent());
 	}
 
 	public void unbind() throws ApplicationException {
-	}
-
-	public class Auswertung implements Serializable {
-		private Date datum;
-		private Long anzahlTage;
-		private BigDecimal grundpreisAnteil;
-		private BigDecimal arbeitspreis;
-		private BigDecimal gezahlt;
-		private BigDecimal genutzt;
-		private BigDecimal summe;
-
-		public Auswertung() {
-			super();
-		}
-
-		public Date getDatum() {
-			return datum;
-		}
-
-		public void setDatum(Date datum) {
-			this.datum = datum;
-		}
-
-		public Long getAnzahlTage() {
-			return anzahlTage;
-		}
-
-		public void setAnzahlTage(long anzahlTage) {
-			this.anzahlTage = anzahlTage;
-		}
-
-		public BigDecimal getGrundpreisAnteil() {
-			return grundpreisAnteil;
-		}
-
-		public void setGrundpreisAnteil(BigDecimal grundpreisAnteil) {
-			this.grundpreisAnteil = grundpreisAnteil;
-		}
-
-		public BigDecimal getArbeitspreis() {
-			return arbeitspreis;
-		}
-
-		public void setArbeitspreis(BigDecimal arbeitspreis) {
-			this.arbeitspreis = arbeitspreis;
-		}
-
-		public BigDecimal getGezahlt() {
-			return gezahlt;
-		}
-
-		public void setGezahlt(BigDecimal gezahlt) {
-			this.gezahlt = gezahlt;
-		}
-
-		public BigDecimal getGenutzt() {
-			return genutzt;
-		}
-
-		public void setGenutzt(BigDecimal genutzt) {
-			this.genutzt = genutzt;
-		}
-
-		public BigDecimal getSumme() {
-			return summe;
-		}
-
-		public void setSumme(BigDecimal summe) {
-			this.summe = summe;
-		}
-
 	}
 }

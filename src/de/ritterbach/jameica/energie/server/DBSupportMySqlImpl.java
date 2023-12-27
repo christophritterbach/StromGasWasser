@@ -26,8 +26,9 @@ import de.willuhn.util.I18N;
  */
 public class DBSupportMySqlImpl extends AbstractDBSupportImpl
 {
-  private final static String DRIVER = "org.mariadb.jdbc.Driver";
-  
+	//private final static String DRIVER = "org.mariadb.jdbc.Driver";
+	private final static String DRIVER = "com.mysql.jdbc.Driver";
+	  
   /**
    * @see de.willuhn.jameica.hbci.rmi.DBSupport#getJdbcDriver()
    */
