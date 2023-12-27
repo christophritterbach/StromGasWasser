@@ -23,10 +23,11 @@ public class WasserKostenControl extends AbstractControl {
 	private KostenWasser kosten;
 	private DateInput gueltigVon;
 	private DateInput gueltigBis;
+	private DateInput abschlagBis;
 	private DecimalInput grundpreis;
 	private DecimalInput arbeitspreis;
 	private CheckboxInput istAbgerechnet;
-	private CheckboxInput istRechnungsabschluss;
+	private CheckboxInput istNeuePeriode;
 	private TextAreaInput notiz;
 
 	public WasserKostenControl(AbstractView view) {
@@ -64,6 +65,17 @@ public class WasserKostenControl extends AbstractControl {
 		return this.gueltigBis;
 	}
 
+	public Input getAbschlagBis() throws RemoteException {
+		if (abschlagBis != null)
+			return abschlagBis;
+
+		Date abschlag = getKostenWasser().getAbschlagBis();
+		this.abschlagBis = new DateInput(abschlag, Settings.DATEFORMAT);
+		this.abschlagBis.setName(Settings.i18n().tr("Abschlag_bis"));
+		this.abschlagBis.setComment(Settings.i18n().tr("Abschlag_bis_comment"));
+		return this.abschlagBis;
+	}
+
 	public Input getGrundpreis() throws RemoteException {
 		if (grundpreis != null)
 			return grundpreis;
@@ -98,14 +110,14 @@ public class WasserKostenControl extends AbstractControl {
 		return this.istAbgerechnet;
 	}
 
-	public Input getIstRechnungsabschluss() throws RemoteException {
-		if (istRechnungsabschluss != null)
-			return istRechnungsabschluss;
+	public Input getIstNeuePeriode() throws RemoteException {
+		if (istNeuePeriode != null)
+			return istNeuePeriode;
 
-		istRechnungsabschluss = new CheckboxInput(getKostenWasser().isRechnungsabschluss());
-		istRechnungsabschluss.setComment(Settings.i18n().tr("Ende der Abrechnungsperiode"));
-		istRechnungsabschluss.setName(Settings.i18n().tr("Rechnungsabschluss"));
-		return this.istRechnungsabschluss;
+		istNeuePeriode = new CheckboxInput(getKostenWasser().isNeuePeriode());
+		istNeuePeriode.setComment(Settings.i18n().tr("Anfang_Abrechnungsperiode"));
+		istNeuePeriode.setName(Settings.i18n().tr("Neue_Periode"));
+		return this.istNeuePeriode;
 	}
 
 	public Input getNotiz() throws RemoteException {
@@ -121,12 +133,13 @@ public class WasserKostenControl extends AbstractControl {
 			KostenWasser kost = getKostenWasser();
 			kost.setGueltigVon((Date) getGueltigVon().getValue());
 			kost.setGueltigBis((Date) getGueltigBis().getValue());
+			kost.setAbschlagBis((Date) getAbschlagBis().getValue());
 			Double gp = (Double) getGrundpreis().getValue();
 			kost.setGrundpreis(gp == null ? new BigDecimal(0) : BigDecimal.valueOf(gp));
 			Double ap = (Double) getArbeitspreis().getValue();
 			kost.setArbeitspreis(ap == null ? new BigDecimal(0) : BigDecimal.valueOf(ap));
 			kost.setAbgerechnet((Boolean) getIstAbgerechnet().getValue());
-			kost.setRechnungsabschluss((Boolean) getIstRechnungsabschluss().getValue());
+			kost.setNeuePeriode((Boolean) getIstNeuePeriode().getValue());
 			kost.setNotiz((String) getNotiz().getValue());
 			try {
 				kost.store();

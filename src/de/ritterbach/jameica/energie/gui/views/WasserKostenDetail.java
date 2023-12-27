@@ -32,10 +32,11 @@ public class WasserKostenDetail extends AbstractView {
 		left.addHeadline(Settings.i18n().tr("Details"));
 		left.addInput(control.getGueltigVon());
 		left.addInput(control.getGueltigBis());
+		left.addInput(control.getAbschlagBis());
 		left.addInput(control.getArbeitspreis());
 		left.addInput(control.getGrundpreis());
 		left.addInput(control.getIstAbgerechnet());
-		left.addInput(control.getIstRechnungsabschluss());
+		left.addInput(control.getIstNeuePeriode());
 
 		// right side
 		Container right = new SimpleContainer(columns.getComposite(), true);

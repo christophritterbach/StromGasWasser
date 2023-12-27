@@ -11,61 +11,60 @@
 
 <project basedir=".." default="all" name="All">
 
+	<target name="init" description="inits the build">
+		<property environment="env" />
+		<property name="build.dir" value="build" />
+		<buildnumber file="${build.dir}/BUILD" />
+		<xmlproperty file="plugin.xml" collapseattributes="true"/>
 
-  <target name="init" description="inits the build">
+		<!-- create SCM tag -->
+		<propertyfile file="${build.dir}/TAG">
+			<entry key="mytag" value="${plugin.version}" />
+		</propertyfile>
+		<replaceregexp flags="g" file="${build.dir}/TAG" match="\." replace="_" />
+		<loadproperties srcFile="${build.dir}/TAG"/>
+		<delete file="${build.dir}/TAG" />
+		<property name="tag" value="V_${mytag}_BUILD_${build.number}" />
 
-    <property environment="env" />
-    <property name="build.dir" value="build" />
-    <buildnumber file="${build.dir}/BUILD" />
-    <xmlproperty file="plugin.xml" collapseattributes="true"/>
+		<loadproperties srcFile="${build.dir}/build.properties"/>
 
-    <!-- create SCM tag -->
-    <propertyfile file="${build.dir}/TAG">
-      <entry key="mytag" value="${plugin.version}" />
-    </propertyfile>
-    <replaceregexp flags="g" file="${build.dir}/TAG" match="\." replace="_" />
-    <loadproperties srcFile="${build.dir}/TAG"/>
-    <delete file="${build.dir}/TAG" />
-    <property name="tag" value="V_${mytag}_BUILD_${build.number}" />
-
-    <loadproperties srcFile="${build.dir}/build.properties"/>
-
-    <echo message="VERSION: ${plugin.version}" />
-    <echo message="TAG    : ${tag}" />
-    <echo message="BUILD  : ${build.number}" />
-    <echo message="JAVA   : ${java.version}" />
+		<echo message="VERSION: ${plugin.version}" />
+		<echo message="TAG    : ${tag}" />
+		<echo message="BUILD  : ${build.number}" />
+		<echo message="JAVA   : ${java.version}" />
 
 		<property name="define.jarfilename" 		value="${plugin.name}.jar" />
 		<property name="define.zipfilename" 		value="${plugin.name}.zip" />
 		<property name="define.srcfilename" 		value="${plugin.name}.src.zip" />
-		<property name="define.javadocfilename" value="${plugin.name}.javadoc.zip" />
+		<property name="define.javadocfilename"     value="${plugin.name}.javadoc.zip" />
 
-		<property name="project.nightly" 			  value="releases/nightly" />
-		<property name="project.release" 			  value="releases/${plugin.version}-${build.number}" />
-		<property name="project.tmp" 				    value="${project.release}/tmp" />
-		<property name="project.javadoc" 			  value="${project.release}/javadoc" />
-		<property name="project.zipdir" 			  value="${project.release}/${plugin.name}" />
+		<property name="project.nightly" 			value="releases/nightly" />
+		<property name="project.release" 			value="releases/${plugin.version}-${build.number}" />
+		<property name="project.tmp" 				value="${project.release}/tmp" />
+		<property name="project.javadoc" 			value="${project.release}/javadoc" />
+		<property name="project.zipdir" 			value="${project.release}/${plugin.name}" />
 
-		<property name="src.dir" 					      value="src" />
-		<property name="lang.dir" 					    value="${src.dir}/lang" />
-    <property name="img.dir"                value="${src.dir}/img" />
-    <property name="help.dir"               value="${src.dir}/help" />
-		<property name="lib.dir" 					      value="lib" />
-    <property name="sql.dir"                value="sql" />
-		<property name="webapps.dir" 			      value="webapps" />
-		<property name="class.dir" 					    value="${project.tmp}/bin" />
+		<property name="src.dir" 					value="src" />
+		<property name="lang.dir" 					value="${src.dir}/lang" />
+		<property name="img.dir"                    value="${src.dir}/img" />
+		<property name="help.dir"                   value="${src.dir}/help" />
+		<property name="lib.dir" 					value="lib" />
+		<property name="sql.dir"                    value="sql" />
+		<property name="update.dir"                 value="updates" />
+		<property name="webapps.dir" 			    value="webapps" />
+		<property name="class.dir" 					value="${project.tmp}/bin" />
 
 		<available file="${lib.dir}"     type="dir" property="havelib" />
-    <available file="${sql.dir}"     type="dir" property="havesql" />
+		<available file="${sql.dir}"     type="dir" property="havesql" />
+		<available file="${update.dir}"  type="dir" property="haveupdates" />
 		<available file="${webapps.dir}" type="dir" property="havewebapps" />
 
 		<path id="compilepath">
 			<pathelement path="${define.compilepath}" />
-      <fileset dir="." >
-        <include name="${lib.dir}/**/*.jar" if="havelib"/>
-      </fileset>
+			<fileset dir="." >
+				<include name="${lib.dir}/**/*.jar" if="havelib"/>
+			</fileset>
 		</path>
-
 	</target>
 
 
@@ -81,36 +80,32 @@
 			<classpath refid="compilepath" />
 		</javac>
 
-    <copy todir="${class.dir}">
-      <fileset dir="${src.dir}">
-        <include name="META-INF/**" />
-      </fileset>
-    </copy>
-    <copy todir="${class.dir}/help">
-      <fileset dir="${help.dir}" />
-    </copy>
-    <copy todir="${class.dir}/img">
-      <fileset dir="${img.dir}" />
-    </copy>
-    <copy todir="${class.dir}/lang">
-      <fileset dir="${lang.dir}" />
-    </copy>
-  </target>
-
+		<copy todir="${class.dir}">
+			<fileset dir="${src.dir}">
+				<include name="META-INF/**" />
+			</fileset>
+		</copy>
+		<copy todir="${class.dir}/help">
+			<fileset dir="${help.dir}" />
+		</copy>
+		<copy todir="${class.dir}/img">
+			<fileset dir="${img.dir}" />
+		</copy>
+		<copy todir="${class.dir}/lang">
+			<fileset dir="${lang.dir}" />
+		</copy>
+	</target>
 
 
 	<target depends="compile" name="tag" description="tags the source in the scm">
-
 		<exec executable="git" failonerror="true" dir="${basedir}">
 			<arg line="tag -m ${tag} ${tag}" />
 		</exec>
 
-    <exec executable="git" failonerror="true" dir="${basedir}">
-      <arg line="push origin ${tag}" />
-    </exec>
-
+		<exec executable="git" failonerror="true" dir="${basedir}">
+			<arg line="push origin ${tag}" />
+		</exec>
 	</target>
-
 
 
 	<!-- Libs nur dann hinzufuegen, wenn sie existieren -->
@@ -120,12 +115,31 @@
 			<fileset dir="${lib.dir}" />
 		</copy>
 	</target>
-  <target name="addsql" if="havesql">
-    <mkdir dir="${project.zipdir}/sql" />
-    <copy todir="${project.zipdir}/sql">
-      <fileset dir="${sql.dir}" />
-    </copy>
-  </target>
+	<target name="addsql" if="havesql">
+		<mkdir dir="${project.zipdir}/sql" />
+		<copy todir="${project.zipdir}/sql">
+			<fileset dir="${sql.dir}" />
+		</copy>
+	</target>
+	<target name="addupdates" if="haveupdates">
+	    <mkdir dir="${project.zipdir}/updates" />
+	    <javac debug="true"
+	           includeantruntime="false"
+	           debuglevel="lines,vars,source"
+	           source="${define.java.version}"
+	           target="${define.java.version}"
+	           encoding="${define.encoding}"
+	           deprecation="true"
+	           destdir="${project.zipdir}/updates"
+	           srcdir="${update.dir}">
+	      <classpath refid="compilepath" />
+	    </javac>
+	    <copy todir="${project.zipdir}/updates">
+	      <fileset dir="${update.dir}">
+	        <exclude name="*.java" />
+	      </fileset>
+	    </copy>
+	</target>
 	<target name="addwebapps" if="havewebapps">
 		<mkdir dir="${project.zipdir}/webapps" />
 		<copy todir="${project.zipdir}/webapps">
@@ -136,7 +150,6 @@
 
 
 	<target depends="compile" name="jar" description="generates the jar file">
-
 		<mkdir dir="${project.release}" />
 		<mkdir dir="${project.zipdir}" />
 
@@ -148,16 +161,17 @@
 				<attribute name="Implementation-Title" value="${plugin.name}" />
 				<attribute name="Implementation-Version" value="${plugin.version}" />
 				<attribute name="Implementation-Buildnumber" value="${build.number}" />
-        <attribute name="Class-Path" value="lang help lib" />
-      </manifest>
+				<attribute name="Class-Path" value="lang help lib" />
+			</manifest>
 			<fileset dir="${class.dir}" />
 		</jar>
 
-	  <antcall target="addlib"/>
-    <antcall target="addsql"/>
+		<antcall target="addlib"/>
+		<antcall target="addsql"/>
 		<antcall target="addwebapps"/>
+		<antcall target="addupdates"/>
 
-    <copy file="plugin.xml" todir="${project.zipdir}" />
+		<copy file="plugin.xml" todir="${project.zipdir}" />
 		<copy file="${build.dir}/COPYING" todir="${project.zipdir}" />
 
 		<!-- Jetzt muessen wir noch das ZIP-File erzeugen -->
@@ -179,11 +193,11 @@
 			<fileset dir=".">
 				<include name=".project" />
 				<include name=".classpath" />
-        <include name="plugin.xml" />
+				<include name="plugin.xml" />
 				<include name="${lib.dir}/**" />
-        <include name="${sql.dir}/**" />
+				<include name="${sql.dir}/**" />
 				<include name="${src.dir}/**" />
-        <include name="${webapps.dir}/**" />
+				<include name="${webapps.dir}/**" />
 				<include name="${build.dir}/**" />
 				<exclude name="${build.dir}/BUILD" />
 			</fileset>
@@ -219,37 +233,27 @@
 
 	</target>
 
-
-
 	<target name="clean" description="cleanup">
 		<delete dir="${project.tmp}" />
 		<delete dir="${project.javadoc}" />
 		<delete dir="${project.zipdir}" />
 	</target>
 
-
-
-  <target name="sign" description="signs the jar/zip file">
+	<target name="sign" description="signs the jar/zip file">
 		<checksum file="${project.release}/${define.zipfilename}" />
 		<checksum file="${project.release}/${define.srcfilename}" />
 		<echo message="Creating PGP signatures" />
 		<exec executable="gpg" failonerror="true" timeout="60000">
-      <arg line="-asb --use-agent ${project.release}/${define.zipfilename}" />
+			<arg line="-asb --use-agent ${project.release}/${define.zipfilename}" />
 		</exec>
 		<exec executable="gpg" failonerror="true" timeout="60000">
-      <arg line="-asb --use-agent ${project.release}/${define.srcfilename}" />
+			<arg line="-asb --use-agent ${project.release}/${define.srcfilename}" />
 		</exec>
 	</target>
 
-
-
 	<target depends="init,compile,tag,jar,javadoc,src,sign,clean" description="build an official release" name="all" />
 
-
-
 	<target depends="init,compile,jar,clean" description="build inofficial release" name="fast" />
-
-
 
 	<target depends="init,compile,jar,javadoc,src" description="build nightly build" name="nightly">
 		<mkdir dir="${project.nightly}" />

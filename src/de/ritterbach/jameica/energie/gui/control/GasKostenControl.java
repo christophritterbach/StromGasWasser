@@ -23,11 +23,12 @@ public class GasKostenControl extends AbstractControl {
 	private KostenGas kosten;
 	private DateInput gueltigVon;
 	private DateInput gueltigBis;
+	private DateInput abschlagBis;
 	private DecimalInput grundpreis;
 	private DecimalInput arbeitspreis;
 	private DecimalInput faktor;
 	private CheckboxInput istAbgerechnet;
-	private CheckboxInput istRechnungsabschluss;
+	private CheckboxInput istNeuePeriode;
 	private TextAreaInput notiz;
 
 	public GasKostenControl(AbstractView view) {
@@ -63,6 +64,17 @@ public class GasKostenControl extends AbstractControl {
 		this.gueltigBis = new DateInput(gueltig, Settings.DATEFORMAT);
 		this.gueltigBis.setName(Settings.i18n().tr("Gueltig_bis"));
 		return this.gueltigBis;
+	}
+
+	public Input getAbschlagBis() throws RemoteException {
+		if (abschlagBis != null)
+			return abschlagBis;
+
+		Date abschlag = getKostenGas().getAbschlagBis();
+		this.abschlagBis = new DateInput(abschlag, Settings.DATEFORMAT);
+		this.abschlagBis.setName(Settings.i18n().tr("Abschlag_bis"));
+		this.abschlagBis.setComment(Settings.i18n().tr("Abschlag_bis_comment"));
+		return this.abschlagBis;
 	}
 
 	public Input getGrundpreis() throws RemoteException {
@@ -111,14 +123,14 @@ public class GasKostenControl extends AbstractControl {
 		return this.istAbgerechnet;
 	}
 
-	public Input getIstRechnungsabschluss() throws RemoteException {
-		if (istRechnungsabschluss != null)
-			return istRechnungsabschluss;
+	public Input getIstNeuePeriode() throws RemoteException {
+		if (istNeuePeriode != null)
+			return istNeuePeriode;
 
-		istRechnungsabschluss = new CheckboxInput(getKostenGas().isRechnungsabschluss());
-		istRechnungsabschluss.setComment(Settings.i18n().tr("Ende der Abrechnungsperiode"));
-		istRechnungsabschluss.setName(Settings.i18n().tr("Rechnungsabschluss"));
-		return this.istRechnungsabschluss;
+		istNeuePeriode = new CheckboxInput(getKostenGas().isNeuePeriode());
+		istNeuePeriode.setComment(Settings.i18n().tr("Anfang_Abrechnungsperiode"));
+		istNeuePeriode.setName(Settings.i18n().tr("Neue_Periode"));
+		return this.istNeuePeriode;
 	}
 
 	public Input getNotiz() throws RemoteException {
@@ -134,6 +146,7 @@ public class GasKostenControl extends AbstractControl {
 			KostenGas kost = getKostenGas();
 			kost.setGueltigVon((Date) getGueltigVon().getValue());
 			kost.setGueltigBis((Date) getGueltigBis().getValue());
+			kost.setAbschlagBis((Date) getAbschlagBis().getValue());
 			Double gp = (Double) getGrundpreis().getValue();
 			kost.setGrundpreis(gp == null ? new BigDecimal(0) : BigDecimal.valueOf(gp));
 			Double ap = (Double) getArbeitspreis().getValue();
@@ -141,7 +154,7 @@ public class GasKostenControl extends AbstractControl {
 			Double fakt = (Double) getArbeitspreis().getValue();
 			kost.setFaktor(fakt == null ? new BigDecimal(1) : BigDecimal.valueOf(fakt));
 			kost.setAbgerechnet((Boolean) getIstAbgerechnet().getValue());
-			kost.setRechnungsabschluss((Boolean) getIstRechnungsabschluss().getValue());
+			kost.setNeuePeriode((Boolean) getIstNeuePeriode().getValue());
 			kost.setNotiz((String) getNotiz().getValue());
 			try {
 				kost.store();

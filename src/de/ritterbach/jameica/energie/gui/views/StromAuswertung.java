@@ -43,7 +43,7 @@ public class StromAuswertung extends AbstractView {
 		@Override
 		public Object extract(ResultSet rs) throws RemoteException, SQLException {
 			List<Auswertung> liste = new ArrayList<Auswertung>();
-			if (kosten.isRechnungsabschluss())
+			if (kosten.isNeuePeriode())
 				summe = BigDecimal.ZERO;
 			while (rs.next()) {
 				Auswertung zaehlerElement = new Auswertung();
@@ -110,7 +110,7 @@ public class StromAuswertung extends AbstractView {
 			// Start der Abrechnung
 			this.kosten = (KostenStrom) kostenListe.next();
 			String notiz = this.kosten.getNotiz();
-			if (this.kosten.isRechnungsabschluss()) {
+			if (this.kosten.isNeuePeriode()) {
 				this.summe = BigDecimal.ZERO;
 				if (notiz == null || notiz.length() < 1)
 					notiz = "";
@@ -127,18 +127,17 @@ public class StromAuswertung extends AbstractView {
 							+ "SELECT ablese_datum AS datum, 2 as sortierung, ablese_wert, verbrauch, schaetzung, zaehlerwechsel_aus, zaehlerwechsel_ein, NULL AS abschlag_betrag, notiz "
 							+ "FROM zaehler_strom " + "WHERE ablese_datum >= ? AND ablese_datum <= ? "
 							+ "ORDER BY 1, 2, 7",
-					new Date[] { this.kosten.getGueltigVon(), this.kosten.getGueltigBis(), this.kosten.getGueltigVon(),
-							this.kosten.getGueltigBis() },
+					new Date[]{this.kosten.getGueltigVon(), (this.kosten.getAbschlagBis() != null) ? this.kosten.getAbschlagBis() : this.kosten.getGueltigBis(), this.kosten.getGueltigVon(), this.kosten.getGueltigBis()},
 					this.rse));
 			// Alles bis zum Ende der Abrechnung
-			Logger.info("Gueltig bis: " + new SimpleDateFormat("dd.MM.yyyy").format(this.kosten.getGueltigBis()));
 			Long anzahlTage = (this.kosten.getGueltigBis().getTime() - letztesDatum.getTime() + ONE_HOUR) / ONE_DAY;
 			BigDecimal anteilGrund = kosten.getGrundpreis().multiply(new BigDecimal(anzahlTage)).divide(einJahr, 2,
 					RoundingMode.HALF_UP);
 			this.summe = this.summe.add(anteilGrund);
-			auswertung.add(new Auswertung(this.kosten.getGueltigBis(), anzahlTage, anteilGrund, this.summe,
-					this.kosten.getNotiz()));
+			if (anzahlTage > 0)
+				auswertung.add(new Auswertung(this.kosten.getGueltigBis(), anzahlTage, anteilGrund, this.summe, this.kosten.getNotiz()));
 		}
+
 		this.tableAuswertung = new TablePart(auswertung, null);
 		this.tableAuswertung.addColumn(i18n.tr("Datum"), "datum", new DateFormatter());
 		this.tableAuswertung.addColumn(i18n.tr("Anzahl_Tage"), "anzahlTage");

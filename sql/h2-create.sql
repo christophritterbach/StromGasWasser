@@ -29,10 +29,11 @@ CREATE TABLE kosten_wasser (
        id int(10) AUTO_INCREMENT
      , gueltig_von date NOT NULL
      , gueltig_bis date
+     , abschlag_bis date
      , grundpreis NUMERIC(6,2) NOT NULL
      , arbeitspreis NUMERIC(10,6) NOT NULL
      , abgerechnet smallint NOT NULL
-     , rechnungsabschluss smallint NOT NULL
+     , neue_periode smallint NOT NULL
      , notiz VARCHAR(1000)
      , UNIQUE (id)
      , PRIMARY KEY (id)
@@ -42,10 +43,11 @@ CREATE TABLE kosten_strom (
        id int(10) AUTO_INCREMENT
      , gueltig_von date NOT NULL
      , gueltig_bis date
+     , abschlag_bis date
      , grundpreis NUMERIC(6,2) NOT NULL
      , arbeitspreis NUMERIC(10,6) NOT NULL
      , abgerechnet smallint NOT NULL
-     , rechnungsabschluss smallint NOT NULL
+     , neue_periode smallint NOT NULL
      , notiz VARCHAR(1000)
      , UNIQUE (id)
      , PRIMARY KEY (id)
@@ -55,11 +57,12 @@ CREATE TABLE kosten_gas (
        id int(10) AUTO_INCREMENT
      , gueltig_von date NOT NULL
      , gueltig_bis date
+     , abschlag_bis date
      , grundpreis NUMERIC(6,2) NOT NULL
      , arbeitspreis NUMERIC(10,6) NOT NULL
      , faktor NUMERIC(10,6) NOT NULL
      , abgerechnet smallint NOT NULL
-     , rechnungsabschluss smallint NOT NULL
+     , neue_periode smallint NOT NULL
      , notiz VARCHAR(1000)
      , UNIQUE (id)
      , PRIMARY KEY (id)
@@ -119,6 +122,6 @@ CREATE INDEX idx_za_ga_datum ON zaehler_gas(ablese_datum);
 -- Bevor wir Daten speichern koennen, muessen wir ein COMMIT machen
 COMMIT;
   
-INSERT INTO version (name,version) values ('db',1);
+INSERT INTO version (name,version) values ('db',2);
   
 COMMIT;

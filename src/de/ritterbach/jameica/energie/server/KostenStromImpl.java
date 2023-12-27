@@ -43,6 +43,16 @@ public class KostenStromImpl extends AbstractDBObject implements KostenStrom {
 	}
 
 	@Override
+	public Date getAbschlagBis() throws RemoteException {
+		return (Date) getAttribute("abschlag_bis");
+	}
+
+	@Override
+	public void setAbschlagBis(Date abschlagBis) throws RemoteException {
+		setAttribute("abschlag_bis", abschlagBis);
+	}
+
+	@Override
 	public BigDecimal getGrundpreis() throws RemoteException {
 		return (BigDecimal) getAttribute("grundpreis");
 	}
@@ -73,13 +83,13 @@ public class KostenStromImpl extends AbstractDBObject implements KostenStrom {
 	}
 
 	@Override
-	public Boolean isRechnungsabschluss() throws RemoteException {
-		return Settings.getBoolFromDatabase(getAttribute("rechnungsabschluss"), false);
+	public Boolean isNeuePeriode() throws RemoteException {
+		return Settings.getBoolFromDatabase(getAttribute("neue_periode"), false);
 	}
 
 	@Override
-	public void setRechnungsabschluss(Boolean rechnungsabschluss) throws RemoteException {
-		setAttribute("rechnungsabschluss", rechnungsabschluss ? 1 : 0);
+	public void setNeuePeriode(Boolean neuePeriode) throws RemoteException {
+		setAttribute("neue_periode", neuePeriode ? 1 : 0);
 	}
 	
 	@Override

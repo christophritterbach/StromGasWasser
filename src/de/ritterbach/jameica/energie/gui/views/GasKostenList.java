@@ -33,7 +33,7 @@ public class GasKostenList extends AbstractView {
 				new CurrencyFormatter(Settings.CURRENCY, Settings.ARBEITSPREISFORMAT));
 		this.tableKosten.addColumn(i18n.tr("Faktor_G"), "faktor");
 		this.tableKosten.addColumn(i18n.tr("Abgerechnet"), "abgerechnet");
-		this.tableKosten.addColumn(i18n.tr("Rechnungsabschluss"), "rechnungsabschluss");
+		this.tableKosten.addColumn(i18n.tr("Neue_Periode"), "neue_periode");
 		this.tableKosten.addColumn(i18n.tr("Notiz"), "notiz", null, true, Column.ALIGN_LEFT);
 		this.tableKosten.setContextMenu(new GasKostenMenu());
 		this.tableKosten.setRememberOrder(true);

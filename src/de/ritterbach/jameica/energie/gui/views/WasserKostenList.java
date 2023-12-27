@@ -33,7 +33,7 @@ public class WasserKostenList extends AbstractView {
 				new CurrencyFormatter(Settings.CURRENCY, Settings.ARBEITSPREISFORMAT));
 		this.tableKosten.addColumn(i18n.tr("Abgerechnet"), "abgerechnet");
 		this.tableKosten.addColumn(i18n.tr("Notiz"), "notiz", null, true, Column.ALIGN_LEFT);
-		this.tableKosten.addColumn(i18n.tr("Rechnungsabschluss"), "rechnungsabschluss");
+		this.tableKosten.addColumn(i18n.tr("Neue_Periode"), "neue_periode");
 		this.tableKosten.setContextMenu(new WasserKostenMenu());
 		this.tableKosten.setRememberOrder(true);
 		this.tableKosten.setRememberColWidths(true);
