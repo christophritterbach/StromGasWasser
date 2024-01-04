@@ -1,0 +1,14 @@
+<form>
+	<p>
+		<span color="header" font="header">Auswertung</span>
+	</p>
+
+  <p>
+    In dieser Ansicht wird die Auswertung angezeigt.
+  </p>
+  	
+	<p>
+	  Es werden die Abschläge und die abgelesenen bzw. geschätzten Zählerständer angezeigt.
+	  Der Verbrauch wird aufgelistet und die Summe angezeigt.    
+	</p>
+</form>

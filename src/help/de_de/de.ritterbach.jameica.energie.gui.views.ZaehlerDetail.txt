@@ -1,0 +1,27 @@
+<form>
+	<p>
+		<span color="header" font="header">Zähler neu anlegen</span>
+	</p>
+    <p>
+      Hier werden können neue Zähler angelegt werden.
+    </p>
+	<p>
+	  Man kann die Zähler nach ihrem Nutzen benennen. Stromzähler, Wasserzähler, Gaszähler.
+	</p>
+	<p>
+	  In den Abrechnungen werden Zähler nach Einheiten abgerechnet.
+	  Stromzähler werden in kWh abgerechnet.
+	  Wasserzähler werden in m³ abgerechnet.
+	  Gaszähler werden in kWh abgerechnet.
+	</p>
+	<p>
+	  Die Zähler haben unterschiedliche Werte, die abgelesen werden können. 
+	  Stromzähler werden in kWh abgelesen.
+	  Wasserzähler werden in m³ abgerechnet.
+	  Gaszähler werden in m³ abgerechnet.
+	</p>
+	<p>
+	   Somit ergibt sich für den Gaszähler ein Umrechnungsfaktor, der auch auf den Rechnungen ausgedruckt wird.
+	   Also nutzt ein Gaszähler einen Umrechnungsfaktor (von m³ in kWh). 
+	</p>
+</form>

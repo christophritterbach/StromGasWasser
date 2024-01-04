@@ -20,7 +20,7 @@ public class Welcome extends AbstractView
 	 */
 	public void bind() throws Exception
 	{
-		GUI.getView().setTitle(Settings.i18n().tr("Example plugin"));
+		GUI.getView().setTitle(Settings.i18n().tr("Energie plugin"));
 		
 		LabelGroup group = new LabelGroup(this.getParent(),Settings.i18n().tr("welcome"));
 		

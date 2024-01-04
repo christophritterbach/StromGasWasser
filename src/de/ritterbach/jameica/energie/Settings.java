@@ -24,6 +24,7 @@ import java.text.ParseException;
 import java.util.Locale;
 
 import de.ritterbach.jameica.energie.rmi.EnergieDBService;
+import de.ritterbach.jameica.energie.rmi.Zaehler;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -36,18 +37,22 @@ public class Settings {
 
 	private static EnergieDBService db = null;
 	private static I18N i18n;
+	private static Zaehler zaehler = null;
 
 	/**
 	 * Our DateFormatter.
 	 */
-	public final static DateFormat DATEFORMAT = DateFormat.getDateInstance(DateFormat.DEFAULT, Application.getConfig().getLocale());
+	public final static DateFormat DATEFORMAT = DateFormat.getDateInstance(DateFormat.DEFAULT,
+			Application.getConfig().getLocale());
 
 	/**
 	 * Our decimal formatter.
 	 */
-	public final static DecimalFormat DECIMALFORMAT = (DecimalFormat) DecimalFormat.getInstance(Application.getConfig().getLocale());
+	public final static DecimalFormat DECIMALFORMAT = (DecimalFormat) DecimalFormat
+			.getInstance(Application.getConfig().getLocale());
 
-	public final static DecimalFormat ARBEITSPREISFORMAT = new DecimalFormat("#0.000000", new DecimalFormatSymbols(Application.getConfig().getLocale()));
+	public final static DecimalFormat ARBEITSPREISFORMAT = new DecimalFormat("#0.000000",
+			new DecimalFormatSymbols(Application.getConfig().getLocale()));
 
 	/**
 	 * Our currency name.
@@ -69,7 +74,8 @@ public class Settings {
 		if (db != null)
 			return db;
 		try {
-			db = (EnergieDBService) Application.getServiceFactory().lookup(StromWasserGasPlugin.class, "energiedatabase");
+			db = (EnergieDBService) Application.getServiceFactory().lookup(StromWasserGasPlugin.class,
+					"energiedatabase");
 			return db;
 		} catch (ConnectException ce) {
 			// Die Exception fliegt nur bei RMI-Kommunikation mit fehlendem RMI-Server
@@ -105,7 +111,7 @@ public class Settings {
 		i18n = Application.getPluginLoader().getPlugin(StromWasserGasPlugin.class).getResources().getI18N();
 		return i18n;
 	}
-	
+
 	public static Boolean getBoolFromDatabase(Object o, Boolean defaultValue) {
 		short istWahr = 1;
 		if (o == null) {
@@ -133,4 +139,11 @@ public class Settings {
 		return wert;
 	}
 
+	public static Zaehler getZaehler() {
+		return Settings.zaehler;
+	}
+	
+	public static void setZaehler(Zaehler zaehler) {
+		Settings.zaehler = zaehler;
+	}
 }

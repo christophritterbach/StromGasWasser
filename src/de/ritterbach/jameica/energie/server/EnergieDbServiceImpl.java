@@ -67,7 +67,7 @@ public class EnergieDbServiceImpl extends DBServiceImpl implements EnergieDBServ
 	 */
 	public String getName() throws RemoteException {
 		I18N i18n = Application.getPluginLoader().getPlugin(StromWasserGasPlugin.class).getResources().getI18N();
-		return i18n.tr("Datenbank-Service für StromGasWasser");
+		return i18n.tr("Datenbank-Service fuer StromGasWasser");
 	}
 
 	/**
@@ -161,7 +161,7 @@ public class EnergieDbServiceImpl extends DBServiceImpl implements EnergieDBServ
 
 						I18N i18n = Application.getPluginLoader().getPlugin(StromWasserGasPlugin.class).getResources().getI18N();
 						throw new ApplicationException(
-								i18n.tr("Bitte aktualisiere erst Jameica auf Version 2.8.2 oder höher"));
+								i18n.tr("Bitte aktualisiere erst Jameica auf Version 2.8.2"));
 					}
 				}
 				t = t.getCause();

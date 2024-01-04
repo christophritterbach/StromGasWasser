@@ -103,7 +103,7 @@ public class VersionImpl extends AbstractDBObject implements Version
     catch (RemoteException re)
     {
       Logger.error("error while checking version",re);
-      throw new ApplicationException(i18n.tr("Fehler beim Prüfen der Version"));
+      throw new ApplicationException(i18n.tr("Fehler beim Pruefen der Version"));
     }
     super.insertCheck();
   }
