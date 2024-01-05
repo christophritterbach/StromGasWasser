@@ -92,9 +92,9 @@ public class AbschlagListPart extends TablePart implements Part {
 	}
 
 	private static GenericIterator<Abschlag> init() throws RemoteException {
-		DBIterator<Abschlag> kosten = Settings.getDBService().createList(Abschlag.class);
-		kosten.setOrder("ORDER BY zaehler_id, abschlag_datum");
-		return kosten;
+		DBIterator<Abschlag> abschlag = Settings.getDBService().createList(Abschlag.class);
+		abschlag.setOrder("ORDER BY zaehler_id, abschlag_datum");
+		return abschlag;
 	}
 
 	public synchronized void paint(Composite parent) throws RemoteException {

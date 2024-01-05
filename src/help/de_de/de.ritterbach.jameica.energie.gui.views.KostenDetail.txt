@@ -1,0 +1,16 @@
+<form>
+	<p>
+		<span color="header" font="header">Details zu den Kosten</span>
+	</p>
+
+    <p>
+      Normalerweise versendet der Versorger einmal im Jahr eine Rechnung.
+      Dort ist dann auch vermerkt, wie die zukünftigen Abschläge ausfallen und welcher Grundpreis und welcher
+      Arbeitspreis zu zahlen ist.
+      Mit der neuen Abrechnungsperiode wird das entsprechende Feld ausgewählt. Bei späteren Anpassungen lässt man das weg.
+      Bei Gas wird ein Umrechungsfaktor auf der Rechnung ausgewiesen. Es ist in der Regel eine Umrechung von m³, wie es der Zähler anzeigt,
+      auf kWh, wie es abgerechnet wird. Der Umrechnungsfaktor kann sich im Laufe des Jahres ändern. Diese Änderungen sollten aber keine
+      großen Auswirkungen auf die Rechnung haben.
+    </p>
+  	
+</form>

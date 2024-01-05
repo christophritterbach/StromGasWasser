@@ -1,0 +1,16 @@
+<form>
+	<p>
+		<span color="header" font="header">Zählerstand eintragen</span>
+	</p>
+    <p>
+      Hier wird ein neuer Zählerstand eingetragen.
+    </p>
+	<p>
+	  Man kann den abgelesenen Wert eintragen. Dann ist der Wert nicht geschätzt.
+	  Wenn aber ein Verbrauch vorab geschätzt wird, dann trägt man diesen ein und gibt an, dass es eine Schätzung ist.  
+	</p>
+	<p>
+	  In der Liste kann man übrigens die Werte ändern.
+	  Ebenso kann man die Verbräuche neu berechnen lassen.
+	</p>
+</form>

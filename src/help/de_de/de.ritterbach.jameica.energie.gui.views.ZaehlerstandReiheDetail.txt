@@ -1,0 +1,13 @@
+<form>
+	<p>
+		<span color="header" font="header">Mehrere Zählerstände angeben</span>
+	</p>
+    <p>
+      Hier werden mehrere neue Zählerstände als Schätzung eingetragen.
+    </p>
+	<p>
+	  So kann man die Erfahungswerte vorab eintragen und dann in der Auswertung schauen, ob die Abschlagszahlungen ausreichen werden.
+	  Wenn ein Zähler ausgebaut wird, ist dieses zu vermerken. Ebenso muss eine erneute Ablesung für den neuen Zähler, der nicht
+	  notwendigerweise auf 0 steht, angegeben werden. Hier ist dann anzugeben, dass ein neuer Zähler eingebaut wurde.
+	</p>
+</form>

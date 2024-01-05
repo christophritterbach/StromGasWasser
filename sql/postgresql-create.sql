@@ -75,8 +75,7 @@ CREATE INDEX idx_zs_fk_zaehler ON zaehlerstand(zaehler_id);
 -- Bevor wir Daten speichern koennen, muessen wir ein COMMIT machen
 COMMIT;
 
-INSERT INTO `zaehler` (`id`, `name`, `mess_einheit`, `nutzt_faktor`) VALUES
-(1, 'Wasseruhr', 'm³', 0),
-(2, 'Stromzaehler', 'kWh', 0);
+INSERT INTO zaehler (name, mess_einheit, ablese_einheit, nutzt_faktor, ist_aktiv) VALUES ('Wasseruhr', 'm³', 'm³', 0, 1);
+INSERT INTO zaehler (name, mess_einheit, ablese_einheit, nutzt_faktor, ist_aktiv) VALUES ('Stromzaehler', 'kWh', 'kWh', 0, 1);
 
-INSERT INTO version (name,version) values ('db',2);
+INSERT INTO version (name,version) values ('db',1);

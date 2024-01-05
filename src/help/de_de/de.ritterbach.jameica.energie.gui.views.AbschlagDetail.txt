@@ -1,0 +1,9 @@
+<form>
+	<p>
+		<span color="header" font="header">Eingabe des Abschlags</span>
+	</p>
+
+    <p>
+       Hier kann man die Abschlagszahlung für den jeweiligen Zähler eintragen.
+    </p>
+</form>

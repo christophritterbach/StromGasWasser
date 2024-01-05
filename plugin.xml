@@ -3,7 +3,7 @@
 <plugin xmlns="http://www.willuhn.de/schema/jameica-plugin"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.willuhn.de/schema/jameica-plugin http://www.willuhn.de/schema/jameica-plugin-1.5.xsd"
-        name="jameica.energie" version="1.2.0" class="de.ritterbach.jameica.energie.StromWasserGasPlugin">
+        name="jameica.energie" version="1.3.0" class="de.ritterbach.jameica.energie.StromWasserGasPlugin">
 
   <description>Energie for Jameica</description>
   <url>https://www.example.com/releases/my-plugin.zip</url>

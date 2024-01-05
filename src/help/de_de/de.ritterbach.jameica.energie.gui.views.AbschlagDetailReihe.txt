@@ -1,0 +1,13 @@
+<form>
+	<p>
+		<span color="header" font="header">Mehrere Abschläge eintragen</span>
+	</p>
+
+    <p>
+      Abschläge werden normalerweise vorab für ein ganzes Jahr angekündigt.
+      Hier können mehrere Abschlagszahlungen angegeben werden.
+    </p>
+	<p>
+      Wenn der letzte Tag des Monats angegegeben wurde, wird immer der Monatsletzte verwendet. 
+	</p>
+</form>
