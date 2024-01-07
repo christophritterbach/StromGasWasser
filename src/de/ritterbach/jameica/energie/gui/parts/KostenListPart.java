@@ -15,7 +15,6 @@ import org.eclipse.swt.widgets.TabFolder;
 import de.ritterbach.jameica.energie.Settings;
 import de.ritterbach.jameica.energie.StromWasserGasPlugin;
 import de.ritterbach.jameica.energie.gui.menu.KostenMenu;
-import de.ritterbach.jameica.energie.rmi.Abschlag;
 import de.ritterbach.jameica.energie.rmi.Kosten;
 import de.ritterbach.jameica.energie.rmi.Zaehler;
 import de.willuhn.datasource.BeanUtil;
@@ -27,6 +26,7 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
+import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
@@ -49,6 +49,7 @@ public class KostenListPart extends TablePart implements Part {
 	private Listener listener;
 	private DBService service = null;
 	private SelectInput zaehlerAuswahl = null;
+	private CheckboxInput nurOffeneRechnungen; 
 	private Input from = null;
 	private Input to = null;
 
@@ -111,6 +112,7 @@ public class KostenListPart extends TablePart implements Part {
 		ColumnLayout cols = new ColumnLayout(tab.getComposite(), 2);
 		Container left = new SimpleContainer(cols.getComposite());
 		left.addInput(this.getZaehlerAuswahl());
+		left.addInput(this.getIstNurOffeneRechnungen());
 		Container right = new SimpleContainer(cols.getComposite());
 		right.addInput(getFrom());
 		right.addInput(getTo());
@@ -144,6 +146,17 @@ public class KostenListPart extends TablePart implements Part {
 		this.zaehlerAuswahl = new SelectInput(liste, preselected);
 		this.zaehlerAuswahl.addListener(this.listener);
 		return this.zaehlerAuswahl;
+	}
+
+	public CheckboxInput getIstNurOffeneRechnungen() throws RemoteException {
+		if (nurOffeneRechnungen != null)
+			return nurOffeneRechnungen;
+
+		nurOffeneRechnungen = new CheckboxInput(true);
+		nurOffeneRechnungen.setName(Settings.i18n().tr("nur_offene_rechnungen"));
+		nurOffeneRechnungen.setComment(Settings.i18n().tr("keine_bereits_abgerechneten"));
+		nurOffeneRechnungen.addListener(this.listener);
+		return this.nurOffeneRechnungen;
 	}
 
 	private Input getFrom() {
@@ -191,6 +204,8 @@ public class KostenListPart extends TablePart implements Part {
 
 						DBIterator<Kosten> kosten = service.createList(Kosten.class);
 						kosten.addFilter("zaehler_id=?", zaehler.getID());
+						if ((Boolean)getIstNurOffeneRechnungen().getValue())
+							kosten.addFilter("abgerechnet=0");
 						// Liste neu laden
 						GenericIterator<Kosten> items = kosten;
 						if (items == null)

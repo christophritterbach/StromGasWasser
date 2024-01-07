@@ -45,7 +45,7 @@ public class ZaehlerControl extends AbstractControl {
 	public CheckboxInput getIstAktiv() throws RemoteException {
 		if (istAktiv != null)
 			return istAktiv;
-		istAktiv = new CheckboxInput(getZaehler().getNutztFaktor());
+		istAktiv = new CheckboxInput(getZaehler().getIstAktiv());
 		istAktiv.setName(Settings.i18n().tr("ist_aktiv"));
 		return this.istAktiv;
 	}

@@ -127,7 +127,7 @@ public class KostenControl extends AbstractControl {
 		return z.getName();
 	}
 
-	public Input getIstAbgerechnet() throws RemoteException {
+	public CheckboxInput getIstAbgerechnet() throws RemoteException {
 		if (istAbgerechnet != null)
 			return istAbgerechnet;
 
@@ -137,7 +137,7 @@ public class KostenControl extends AbstractControl {
 		return this.istAbgerechnet;
 	}
 
-	public Input getIstNeuePeriode() throws RemoteException {
+	public CheckboxInput getIstNeuePeriode() throws RemoteException {
 		if (istNeuePeriode != null)
 			return istNeuePeriode;
 

@@ -3,6 +3,7 @@ package de.ritterbach.jameica.energie.gui.parts;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
@@ -25,6 +26,7 @@ import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
+import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
@@ -47,8 +49,9 @@ public class ZaehlerstandListPart extends TablePart implements Part {
 	private Listener listener;
 	private DBService service = null;
 	private SelectInput zaehlerAuswahl = null;
-	private Input from = null;
-	private Input to = null;
+	private CheckboxInput nurOffeneRechnungen; 
+	private DateInput from = null;
+	private DateInput to = null;
 
 	public ZaehlerstandListPart(Action action) throws RemoteException {
 		this(init(), action);
@@ -105,6 +108,7 @@ public class ZaehlerstandListPart extends TablePart implements Part {
 		ColumnLayout cols = new ColumnLayout(tab.getComposite(), 2);
 		Container left = new SimpleContainer(cols.getComposite());
 		left.addInput(this.getZaehlerAuswahl());
+		left.addInput(this.getIstNurOffeneRechnungen());
 		Container right = new SimpleContainer(cols.getComposite());
 		right.addInput(getFrom());
 		right.addInput(getTo());
@@ -138,6 +142,17 @@ public class ZaehlerstandListPart extends TablePart implements Part {
 		this.zaehlerAuswahl = new SelectInput(liste, preselected);
 		this.zaehlerAuswahl.addListener(this.listener);
 		return this.zaehlerAuswahl;
+	}
+
+	public CheckboxInput getIstNurOffeneRechnungen() throws RemoteException {
+		if (nurOffeneRechnungen != null)
+			return nurOffeneRechnungen;
+
+		nurOffeneRechnungen = new CheckboxInput(true);
+		nurOffeneRechnungen.setName(Settings.i18n().tr("nur_offene_rechnungen"));
+		nurOffeneRechnungen.setComment(Settings.i18n().tr("keine_bereits_abgerechneten"));
+		nurOffeneRechnungen.addListener(this.listener);
+		return this.nurOffeneRechnungen;
 	}
 
 	private Input getFrom() {
@@ -174,7 +189,7 @@ public class ZaehlerstandListPart extends TablePart implements Part {
 		return this.to;
 	}
 
-	private synchronized void handleReload(boolean force) {
+	public synchronized void handleReload(boolean force) {
 		try {
 			final Zaehler zaehler = (Zaehler) getZaehlerAuswahl().getValue();
 			Settings.setZaehler(zaehler);
@@ -185,6 +200,19 @@ public class ZaehlerstandListPart extends TablePart implements Part {
 
 						DBIterator<Zaehlerstand> zaehlerstand = service.createList(Zaehlerstand.class);
 						zaehlerstand.addFilter("zaehler_id=?", zaehler.getID());
+						Date datumVon = (Date) getFrom().getValue();
+						Date datumBis = (Date) getTo().getValue();
+						if ((Boolean)getIstNurOffeneRechnungen().getValue()) {
+							Date vonBis[] = KostenQuery.getMinDateMaxdateNurOffeneRechnungen(zaehler);
+							if (vonBis != null) {
+								datumVon = vonBis[0];
+								from.setValue(datumVon);
+								datumBis = vonBis[01];
+								to.setValue(datumBis);
+							}
+						}
+						zaehlerstand.addFilter("ablese_datum >= ?", datumVon);
+						zaehlerstand.addFilter("ablese_datum <= ?", datumBis);
 						// Liste neu laden
 						GenericIterator<Zaehlerstand> items = zaehlerstand;
 						if (items == null)

@@ -3,6 +3,7 @@ package de.ritterbach.jameica.energie.gui.parts;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
@@ -26,6 +27,7 @@ import de.willuhn.jameica.gui.GUI;
 import de.willuhn.jameica.gui.Part;
 import de.willuhn.jameica.gui.formatter.CurrencyFormatter;
 import de.willuhn.jameica.gui.formatter.DateFormatter;
+import de.willuhn.jameica.gui.input.CheckboxInput;
 import de.willuhn.jameica.gui.input.DateInput;
 import de.willuhn.jameica.gui.input.Input;
 import de.willuhn.jameica.gui.input.SelectInput;
@@ -48,6 +50,7 @@ public class AbschlagListPart extends TablePart implements Part {
 	private Listener listener;
 	private DBService service = null;
 	private SelectInput zaehlerAuswahl = null;
+	private CheckboxInput nurOffeneRechnungen; 
 	private Input from = null;
 	private Input to = null;
 
@@ -104,6 +107,7 @@ public class AbschlagListPart extends TablePart implements Part {
 		ColumnLayout cols = new ColumnLayout(tab.getComposite(), 2);
 		Container left = new SimpleContainer(cols.getComposite());
 		left.addInput(this.getZaehlerAuswahl());
+		left.addInput(this.getIstNurOffeneRechnungen());
 		Container right = new SimpleContainer(cols.getComposite());
 		right.addInput(getFrom());
 		right.addInput(getTo());
@@ -137,6 +141,17 @@ public class AbschlagListPart extends TablePart implements Part {
 		this.zaehlerAuswahl = new SelectInput(liste, preselected);
 		this.zaehlerAuswahl.addListener(this.listener);
 		return this.zaehlerAuswahl;
+	}
+
+	public CheckboxInput getIstNurOffeneRechnungen() throws RemoteException {
+		if (nurOffeneRechnungen != null)
+			return nurOffeneRechnungen;
+
+		nurOffeneRechnungen = new CheckboxInput(true);
+		nurOffeneRechnungen.setName(Settings.i18n().tr("nur_offene_rechnungen"));
+		nurOffeneRechnungen.setComment(Settings.i18n().tr("keine_bereits_abgerechneten"));
+		nurOffeneRechnungen.addListener(this.listener);
+		return this.nurOffeneRechnungen;
 	}
 
 	private Input getFrom() {
@@ -184,6 +199,19 @@ public class AbschlagListPart extends TablePart implements Part {
 
 						DBIterator<Abschlag> abschlag = service.createList(Abschlag.class);
 						abschlag.addFilter("zaehler_id=?", zaehler.getID());
+						Date datumVon = (Date) getFrom().getValue();
+						Date datumBis = (Date) getTo().getValue();
+						if ((Boolean)getIstNurOffeneRechnungen().getValue()) {
+							Date vonBis[] = KostenQuery.getMinDateMaxdateNurOffeneRechnungen(zaehler);
+							if (vonBis != null) {
+								datumVon = vonBis[0];
+								from.setValue(datumVon);
+								datumBis = vonBis[01];
+								to.setValue(datumBis);
+							}
+						}
+						abschlag.addFilter("abschlag_datum >= ?", datumVon);
+						abschlag.addFilter("abschlag_datum <= ?", datumBis);
 						// Liste neu laden
 						GenericIterator<Abschlag> items = abschlag;
 						if (items == null)

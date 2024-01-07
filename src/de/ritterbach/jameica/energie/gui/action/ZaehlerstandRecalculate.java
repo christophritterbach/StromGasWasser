@@ -5,6 +5,7 @@ import java.rmi.RemoteException;
 
 import de.ritterbach.jameica.energie.Settings;
 import de.ritterbach.jameica.energie.rmi.EnergieDBService;
+import de.ritterbach.jameica.energie.rmi.Zaehler;
 import de.ritterbach.jameica.energie.rmi.Zaehlerstand;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.jameica.gui.Action;
@@ -19,43 +20,45 @@ public class ZaehlerstandRecalculate implements Action {
 		try {
 			EnergieDBService service = Settings.getDBService();
 			DBIterator<Zaehlerstand> list = service.createList(Zaehlerstand.class);
+			Zaehler zaehler = Settings.getZaehler();
+			list.addFilter("zaehler_id=?", zaehler.getID());
 			list.setOrder("ORDER BY " + service.getSQLTimestamp("ablese_datum") + " ASC, zaehlerwechsel_ein ASC");
 			BigDecimal letzterZaehlerstand = null;
 			while (list.hasNext()) {
-				Zaehlerstand zaehler = (Zaehlerstand) list.next();
+				Zaehlerstand zaehlerstand = (Zaehlerstand) list.next();
 				if (letzterZaehlerstand == null) {
-					letzterZaehlerstand = zaehler.getAbleseWert().add(BigDecimal.ZERO);
+					letzterZaehlerstand = zaehlerstand.getAbleseWert().add(BigDecimal.ZERO);
 				}
-				if (zaehler.isZaehlerwechselAus()) {
+				if (zaehlerstand.isZaehlerwechselAus()) {
 					// Wenn der Zähler ausgebaut wird, ist es keine Schätzung mehr.
 					// Es kann auch nicht gleichzeitig der Wert des Einbaus sein.
 					// Aber wir können den Verbrauch berechnen.
-					zaehler.setSchaetzung(false);
-					zaehler.setZaehlerwechselEin(false);
-					zaehler.setVerbrauch(zaehler.getAbleseWert().subtract(letzterZaehlerstand));
-					zaehler.store();
+					zaehlerstand.setSchaetzung(false);
+					zaehlerstand.setZaehlerwechselEin(false);
+					zaehlerstand.setVerbrauch(zaehlerstand.getAbleseWert().subtract(letzterZaehlerstand));
+					zaehlerstand.store();
 					continue;
 				}
-				if (zaehler.isZaehlerwechselEin()) {
+				if (zaehlerstand.isZaehlerwechselEin()) {
 					// Wenn ein neuer Zähler eingebaut wird, ist es keine Schätzung mehr.
 					// Es kann auch nicht gleichzeitig der Wert des Ausbaus sein.
 					// Es gab noch keinen Verbrauch. Wir kennen nur den Zählerstand beim Einbau.
 					// Und den müssen wir uns merken
-					zaehler.setSchaetzung(false);
-					zaehler.setZaehlerwechselAus(false);
-					zaehler.setVerbrauch(BigDecimal.ZERO);
-					letzterZaehlerstand = zaehler.getAbleseWert().add(BigDecimal.ZERO);
-					zaehler.store();
+					zaehlerstand.setSchaetzung(false);
+					zaehlerstand.setZaehlerwechselAus(false);
+					zaehlerstand.setVerbrauch(BigDecimal.ZERO);
+					letzterZaehlerstand = zaehlerstand.getAbleseWert().add(BigDecimal.ZERO);
+					zaehlerstand.store();
 					continue;
 				}
-				if (zaehler.isSchaetzung()) {
-					letzterZaehlerstand = letzterZaehlerstand.add(zaehler.getVerbrauch());
-					zaehler.setAbleseWert(letzterZaehlerstand);
+				if (zaehlerstand.isSchaetzung()) {
+					letzterZaehlerstand = letzterZaehlerstand.add(zaehlerstand.getVerbrauch());
+					zaehlerstand.setAbleseWert(letzterZaehlerstand);
 				} else {
-					zaehler.setVerbrauch(zaehler.getAbleseWert().subtract(letzterZaehlerstand));
-					letzterZaehlerstand = zaehler.getAbleseWert().add(BigDecimal.ZERO);
+					zaehlerstand.setVerbrauch(zaehlerstand.getAbleseWert().subtract(letzterZaehlerstand));
+					letzterZaehlerstand = zaehlerstand.getAbleseWert().add(BigDecimal.ZERO);
 				}
-				zaehler.store();
+				zaehlerstand.store();
 			}
 			GUI.getCurrentView().reload();
 		} catch (RemoteException e) {

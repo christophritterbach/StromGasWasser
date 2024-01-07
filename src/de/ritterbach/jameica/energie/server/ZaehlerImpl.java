@@ -17,6 +17,7 @@ public class ZaehlerImpl extends AbstractDBObject implements Zaehler {
 
 	public ZaehlerImpl() throws RemoteException {
 		super();
+		this.setIstAktiv(true);
 	}
 
 	@Override

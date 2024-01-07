@@ -19,15 +19,15 @@ public class ZaehlerstandListControl extends AbstractControl {
 
 	  public Part getListe() throws RemoteException
 		{
-	    if (list != null)
+	    if (this.list != null)
 	      return list;
-	    list = new ZaehlerstandListPart(new Action() {
+	    this.list = new ZaehlerstandListPart(new Action() {
 			@Override
 			public void handleAction(Object context) throws ApplicationException {
 			    if (!(context instanceof Zaehlerstand))
 			        return;
 			}
 	    });
-	    return list;
+	    return this.list;
 		}
 }
