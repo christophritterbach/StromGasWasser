@@ -49,6 +49,7 @@ public class AuswertungListPart extends TablePart implements Part {
 	private CheckboxInput nurOffeneRechnungen; 
 	private Input from = null;
 	private Input to = null;
+	private Settings settings = null;
 
 	public AuswertungListPart(Action action) throws RemoteException {
 		this(init(), action);
@@ -57,6 +58,7 @@ public class AuswertungListPart extends TablePart implements Part {
 	public AuswertungListPart(List<Auswertung> list, Action action) throws RemoteException {
 		super(list, action);
 		this.service = Settings.getDBService();
+		this.settings = new Settings(StromWasserGasPlugin.class);
 		this.listener = new Listener() {
 			public void handleEvent(Event event) {
 				// Wenn das event "null" ist, kann es nicht von SWT ausgeloest worden sein
@@ -114,14 +116,16 @@ public class AuswertungListPart extends TablePart implements Part {
 		zaehler.addFilter("ist_aktiv = 1");
 		zaehler.setOrder("ORDER BY id");
 		List<Zaehler> liste = new ArrayList<>();
-		while (zaehler.hasNext()) {
+		String zaehlerPreselect = settings.getString("zaehler", "0");
+		Zaehler preselected = null;
+		while(zaehler.hasNext()) {
 			Zaehler z = (Zaehler) zaehler.next();
+			if (z.getID().equals(zaehlerPreselect))
+				preselected = z;
 			liste.add(z);
 		}
-		Zaehler preselected = liste.get(0);
-		if (Settings.getZaehler() != null) {
-			preselected = Settings.getZaehler();
-		}
+		if (preselected == null)
+			preselected = liste.get(0);
 		this.zaehlerAuswahl = new SelectInput(liste, preselected);
 		this.zaehlerAuswahl.addListener(this.listener);
 		return this.zaehlerAuswahl;
@@ -131,7 +135,7 @@ public class AuswertungListPart extends TablePart implements Part {
 		if (nurOffeneRechnungen != null)
 			return nurOffeneRechnungen;
 
-		nurOffeneRechnungen = new CheckboxInput(true);
+		nurOffeneRechnungen = new CheckboxInput(settings.getBoolean("nur_offene", true));
 		nurOffeneRechnungen.setName(Settings.i18n().tr("nur_offene_rechnungen"));
 		nurOffeneRechnungen.setComment(Settings.i18n().tr("keine_bereits_abgerechneten"));
 		nurOffeneRechnungen.addListener(this.listener);
@@ -139,7 +143,7 @@ public class AuswertungListPart extends TablePart implements Part {
 	}
 
 	private Input getFrom() {
-		if (this.from != null)
+		if (this.from != null && this.from.getValue() != null)
 			return this.from;
 		Calendar datum = Calendar.getInstance();
 		datum.set(Calendar.HOUR_OF_DAY, 0);
@@ -148,7 +152,7 @@ public class AuswertungListPart extends TablePart implements Part {
 		datum.set(Calendar.MILLISECOND, 0);
 		datum.add(Calendar.MONTH, -6);
 		datum.set(Calendar.DAY_OF_MONTH, datum.getActualMinimum(Calendar.DAY_OF_MONTH));
-		this.from = new DateInput(datum.getTime());
+		this.from = new DateInput(settings.getDate("from", datum.getTime()));
 		this.from.setName(i18n.tr("von"));
 		this.from.setComment(null);
 		this.from.addListener(this.listener);
@@ -156,7 +160,7 @@ public class AuswertungListPart extends TablePart implements Part {
 	}
 
 	private Input getTo() {
-		if (this.to != null)
+		if (this.to != null && this.to.getValue() != null)
 			return this.to;
 		Calendar datum = Calendar.getInstance();
 		datum.set(Calendar.HOUR_OF_DAY, 0);
@@ -165,7 +169,7 @@ public class AuswertungListPart extends TablePart implements Part {
 		datum.set(Calendar.MILLISECOND, 0);
 		datum.add(Calendar.MONTH, 6);
 		datum.set(Calendar.DAY_OF_MONTH, datum.getActualMinimum(Calendar.DAY_OF_MONTH));
-		this.to = new DateInput(datum.getTime());
+		this.to = new DateInput(settings.getDate("to", datum.getTime()));
 		this.to.setName(i18n.tr("bis"));
 		this.to.setComment(null);
 		this.to.addListener(this.listener);
@@ -198,6 +202,10 @@ public class AuswertungListPart extends TablePart implements Part {
 							if (!item.getDatum().after(datumBis) && !item.getDatum().before(datumVon))
 								addItem(item);
 						sort();
+						settings.setAttribute("zaehler", zaehler.getID());
+						settings.setAttribute("from", (Date) getFrom().getValue());
+						settings.setAttribute("to", (Date) getTo().getValue());
+						settings.setAttribute("nur_offene", (Boolean)getIstNurOffeneRechnungen().getValue());
 					} catch (Exception e) {
 						Logger.error("error while reloading table", e);
 						Application.getMessagingFactory().sendMessage(new StatusBarMessage(

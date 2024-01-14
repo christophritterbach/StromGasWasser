@@ -21,6 +21,7 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
+import java.util.Date;
 import java.util.Locale;
 
 import de.ritterbach.jameica.energie.rmi.EnergieDBService;
@@ -33,11 +34,27 @@ import de.willuhn.util.I18N;
 /**
  * This class holds some settings for our plugin.
  */
-public class Settings {
+public class Settings extends de.willuhn.util.Settings {
 
 	private static EnergieDBService db = null;
 	private static I18N i18n;
 	private static Zaehler zaehler = null;
+
+	public Settings(Class clazz) {
+		this(clazz, true);
+	}
+
+	public Settings(Class clazz, boolean overridable) {
+		super("cfg", overridable ? Application.getConfig().getConfigDir() : null, clazz);
+	}
+
+	public Date getDate(String name, Date defaultValue) {
+		return new Date(super.getLong(name, defaultValue.getTime()));
+	}
+
+	public void setAttribute(String name, Date value) {
+		super.setAttribute(name, value.getTime());
+	}
 
 	/**
 	 * Our DateFormatter.
@@ -142,7 +159,7 @@ public class Settings {
 	public static Zaehler getZaehler() {
 		return Settings.zaehler;
 	}
-	
+
 	public static void setZaehler(Zaehler zaehler) {
 		Settings.zaehler = zaehler;
 	}
