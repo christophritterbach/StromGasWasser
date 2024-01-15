@@ -14,7 +14,7 @@ import java.io.File;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 
-import de.ritterbach.jameica.energie.StromWasserGasPlugin;
+import de.ritterbach.jameica.energie.EnergiePlugin;
 import de.ritterbach.jameica.energie.rmi.Version;
 import de.willuhn.jameica.plugin.AbstractPlugin;
 import de.willuhn.jameica.plugin.Manifest;
@@ -45,7 +45,7 @@ public class EnergieUpdateProvider implements UpdateProvider
     this.conn    = conn;
     this.version = version;
     
-    AbstractPlugin p = Application.getPluginLoader().getPlugin(StromWasserGasPlugin.class);
+    AbstractPlugin p = Application.getPluginLoader().getPlugin(EnergiePlugin.class);
     this.manifest    = p.getManifest();
     this.res         = p.getResources();
   }

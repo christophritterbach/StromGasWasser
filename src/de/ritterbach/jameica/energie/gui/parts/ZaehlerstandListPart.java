@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TabFolder;
 
 import de.ritterbach.jameica.energie.Settings;
-import de.ritterbach.jameica.energie.StromWasserGasPlugin;
+import de.ritterbach.jameica.energie.EnergiePlugin;
 import de.ritterbach.jameica.energie.gui.menu.ZaehlerstandMenu;
 import de.ritterbach.jameica.energie.rmi.Zaehler;
 import de.ritterbach.jameica.energie.rmi.Zaehlerstand;
@@ -61,7 +61,7 @@ public class ZaehlerstandListPart extends TablePart implements Part {
 	public ZaehlerstandListPart(GenericIterator<Zaehlerstand> list, Action action) throws RemoteException {
 		super(list, action);
 		this.service = Settings.getDBService();
-		this.settings = new Settings(StromWasserGasPlugin.class);
+		this.settings = new Settings(EnergiePlugin.class);
 		this.listener = new Listener() {
 			public void handleEvent(Event event) {
 				// Wenn das event "null" ist, kann es nicht von SWT ausgeloest worden sein
@@ -72,7 +72,7 @@ public class ZaehlerstandListPart extends TablePart implements Part {
 			}
 		};
 		Zaehler zaehler = Settings.getZaehler();
-		this.i18n = Application.getPluginLoader().getPlugin(StromWasserGasPlugin.class).getResources().getI18N();
+		this.i18n = Application.getPluginLoader().getPlugin(EnergiePlugin.class).getResources().getI18N();
 		addColumn(i18n.tr("Ablese_Datum"), "ablese_datum", new DateFormatter());
 		addColumn(i18n.tr("Ablese_Wert" ), "ablese_wert", null, true);
 		addColumn(i18n.tr("Verbrauch"), "verbrauch", null, true);

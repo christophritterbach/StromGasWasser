@@ -11,7 +11,7 @@ package de.ritterbach.jameica.energie.server;
 
 import java.rmi.RemoteException;
 
-import de.ritterbach.jameica.energie.StromWasserGasPlugin;
+import de.ritterbach.jameica.energie.EnergiePlugin;
 import de.ritterbach.jameica.energie.rmi.Version;
 import de.willuhn.datasource.db.AbstractDBObject;
 import de.willuhn.jameica.system.Application;
@@ -91,7 +91,7 @@ public class VersionImpl extends AbstractDBObject implements Version
    */
   protected void insertCheck() throws ApplicationException
   {
-    I18N i18n = Application.getPluginLoader().getPlugin(StromWasserGasPlugin.class).getResources().getI18N();
+    I18N i18n = Application.getPluginLoader().getPlugin(EnergiePlugin.class).getResources().getI18N();
 
     try
     {

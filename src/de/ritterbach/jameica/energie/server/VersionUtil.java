@@ -12,7 +12,7 @@ package de.ritterbach.jameica.energie.server;
 
 import java.rmi.RemoteException;
 
-import de.ritterbach.jameica.energie.StromWasserGasPlugin;
+import de.ritterbach.jameica.energie.EnergiePlugin;
 import de.ritterbach.jameica.energie.rmi.EnergieDBService;
 import de.ritterbach.jameica.energie.rmi.Version;
 import de.willuhn.datasource.rmi.DBIterator;
@@ -38,7 +38,7 @@ public class VersionUtil
   {
     if (name == null || name.length() == 0)
     {
-      I18N i18n = Application.getPluginLoader().getPlugin(StromWasserGasPlugin.class).getResources().getI18N();
+      I18N i18n = Application.getPluginLoader().getPlugin(EnergiePlugin.class).getResources().getI18N();
       throw new ApplicationException(i18n.tr("Keine Versionsbezeichnung angegeben"));
     }
     DBIterator list = service.createList(Version.class);

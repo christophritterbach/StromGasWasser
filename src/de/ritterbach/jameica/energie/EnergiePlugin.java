@@ -17,7 +17,7 @@ import de.willuhn.util.I18N;
  * <code>AbstractPlugin</code>. If so, Jameica will detect your plugin
  * automatically at startup.
  */
-public class StromWasserGasPlugin extends AbstractPlugin {
+public class EnergiePlugin extends AbstractPlugin {
 
 	/**
 	 * This method is invoked on every startup. You can make here some stuff to init

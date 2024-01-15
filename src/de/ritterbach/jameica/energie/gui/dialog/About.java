@@ -3,7 +3,7 @@ package de.ritterbach.jameica.energie.gui.dialog;
 import org.eclipse.swt.widgets.Composite;
 
 import de.ritterbach.jameica.energie.Settings;
-import de.ritterbach.jameica.energie.StromWasserGasPlugin;
+import de.ritterbach.jameica.energie.EnergiePlugin;
 import de.willuhn.jameica.gui.Action;
 import de.willuhn.jameica.gui.dialogs.AbstractDialog;
 import de.willuhn.jameica.gui.input.LabelInput;
@@ -32,7 +32,7 @@ public class About extends AbstractDialog {
 		text.paint(parent);
 
 		LabelGroup group = new LabelGroup(parent, " Information ");
-		AbstractPlugin p = Application.getPluginLoader().getPlugin(StromWasserGasPlugin.class);
+		AbstractPlugin p = Application.getPluginLoader().getPlugin(EnergiePlugin.class);
 
 		group.addLabelPair(Settings.i18n().tr("Version"), new LabelInput("" + p.getManifest().getVersion()));
 		group.addLabelPair(Settings.i18n().tr("Working directory"),

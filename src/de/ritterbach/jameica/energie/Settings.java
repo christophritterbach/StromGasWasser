@@ -91,14 +91,14 @@ public class Settings extends de.willuhn.util.Settings {
 		if (db != null)
 			return db;
 		try {
-			db = (EnergieDBService) Application.getServiceFactory().lookup(StromWasserGasPlugin.class,
+			db = (EnergieDBService) Application.getServiceFactory().lookup(EnergiePlugin.class,
 					"energiedatabase");
 			return db;
 		} catch (ConnectException ce) {
 			// Die Exception fliegt nur bei RMI-Kommunikation mit fehlendem RMI-Server
-			I18N i18n = Application.getPluginLoader().getPlugin(StromWasserGasPlugin.class).getResources().getI18N();
-			String host = Application.getServiceFactory().getLookupHost(StromWasserGasPlugin.class, "database");
-			int port = Application.getServiceFactory().getLookupPort(StromWasserGasPlugin.class, "database");
+			I18N i18n = Application.getPluginLoader().getPlugin(EnergiePlugin.class).getResources().getI18N();
+			String host = Application.getServiceFactory().getLookupHost(EnergiePlugin.class, "database");
+			int port = Application.getServiceFactory().getLookupPort(EnergiePlugin.class, "database");
 			String msg = i18n.tr("Energie-Server \"{0}\" nicht erreichbar", (host + ":" + port));
 			try {
 				Application.getCallback().notifyUser(msg);
@@ -125,7 +125,7 @@ public class Settings extends de.willuhn.util.Settings {
 	public static I18N i18n() {
 		if (i18n != null)
 			return i18n;
-		i18n = Application.getPluginLoader().getPlugin(StromWasserGasPlugin.class).getResources().getI18N();
+		i18n = Application.getPluginLoader().getPlugin(EnergiePlugin.class).getResources().getI18N();
 		return i18n;
 	}
 

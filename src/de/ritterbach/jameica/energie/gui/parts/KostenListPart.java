@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TabFolder;
 
 import de.ritterbach.jameica.energie.Settings;
-import de.ritterbach.jameica.energie.StromWasserGasPlugin;
+import de.ritterbach.jameica.energie.EnergiePlugin;
 import de.ritterbach.jameica.energie.gui.menu.KostenMenu;
 import de.ritterbach.jameica.energie.rmi.Kosten;
 import de.ritterbach.jameica.energie.rmi.Zaehler;
@@ -62,7 +62,7 @@ public class KostenListPart extends TablePart implements Part {
 	public KostenListPart(GenericIterator<Kosten> list, Action action) throws RemoteException {
 		super(list, action);
 		this.service = Settings.getDBService();
-		this.settings = new Settings(StromWasserGasPlugin.class);
+		this.settings = new Settings(EnergiePlugin.class);
 		this.listener = new Listener() {
 			public void handleEvent(Event event) {
 				// Wenn das event "null" ist, kann es nicht von SWT ausgeloest worden sein
@@ -73,7 +73,7 @@ public class KostenListPart extends TablePart implements Part {
 			}
 		};
 
-		this.i18n = Application.getPluginLoader().getPlugin(StromWasserGasPlugin.class).getResources().getI18N();
+		this.i18n = Application.getPluginLoader().getPlugin(EnergiePlugin.class).getResources().getI18N();
 		addColumn(i18n.tr("Gueltig_von"), "gueltig_von", new DateFormatter());
 		addColumn(i18n.tr("Gueltig_bis"), "gueltig_bis", new DateFormatter());
 		addColumn(i18n.tr("Grundpreis"), "grundpreis", new CurrencyFormatter(Settings.CURRENCY, null));

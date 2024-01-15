@@ -7,7 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import de.ritterbach.jameica.energie.StromWasserGasPlugin;
+import de.ritterbach.jameica.energie.EnergiePlugin;
 import de.ritterbach.jameica.energie.rmi.DBSupport;
 import de.ritterbach.jameica.energie.rmi.EnergieDBService;
 import de.ritterbach.jameica.energie.rmi.Version;
@@ -48,7 +48,7 @@ public class EnergieDbServiceImpl extends DBServiceImpl implements EnergieDBServ
 	public EnergieDbServiceImpl(String driverClass) throws RemoteException {
 		super();
 		BeanService service = Application.getBootLoader().getBootable(BeanService.class);
-		MultipleClassLoader cl = Application.getPluginLoader().getManifest(StromWasserGasPlugin.class).getClassLoader();
+		MultipleClassLoader cl = Application.getPluginLoader().getManifest(EnergiePlugin.class).getClassLoader();
 		this.setClassloader(cl);
 		this.setClassFinder(cl.getClassFinder());
 		if (driverClass == null)
@@ -66,7 +66,7 @@ public class EnergieDbServiceImpl extends DBServiceImpl implements EnergieDBServ
 	 * @see de.willuhn.datasource.Service#getName()
 	 */
 	public String getName() throws RemoteException {
-		I18N i18n = Application.getPluginLoader().getPlugin(StromWasserGasPlugin.class).getResources().getI18N();
+		I18N i18n = Application.getPluginLoader().getPlugin(EnergiePlugin.class).getResources().getI18N();
 		return i18n.tr("Datenbank-Service fuer StromGasWasser");
 	}
 
@@ -159,7 +159,7 @@ public class EnergieDbServiceImpl extends DBServiceImpl implements EnergieDBServ
 					if (code == 90131) {
 						Logger.error("found buggy h2 driver, update jameica first", e);
 
-						I18N i18n = Application.getPluginLoader().getPlugin(StromWasserGasPlugin.class).getResources().getI18N();
+						I18N i18n = Application.getPluginLoader().getPlugin(EnergiePlugin.class).getResources().getI18N();
 						throw new ApplicationException(
 								i18n.tr("Bitte aktualisiere erst Jameica auf Version 2.8.2"));
 					}
@@ -275,11 +275,11 @@ public class EnergieDbServiceImpl extends DBServiceImpl implements EnergieDBServ
 	 * @see de.willuhn.jameica.hbci.rmi.HBCIDBService#install()
 	 */
 	public void install() throws RemoteException {
-		I18N i18n = Application.getPluginLoader().getPlugin(StromWasserGasPlugin.class).getResources().getI18N();
+		I18N i18n = Application.getPluginLoader().getPlugin(EnergiePlugin.class).getResources().getI18N();
 		ProgressMonitor monitor = Application.getCallback().getStartupMonitor();
 		monitor.setStatusText(i18n.tr("Installiere StromGasWasser"));
 
-		Manifest mf = Application.getPluginLoader().getPlugin(StromWasserGasPlugin.class).getManifest();
+		Manifest mf = Application.getPluginLoader().getPlugin(EnergiePlugin.class).getManifest();
 		File file = new File(mf.getPluginDir() + File.separator + "sql", "create.sql");
 		this.driver.execute(getConnection(), file);
 	}

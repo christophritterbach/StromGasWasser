@@ -17,7 +17,7 @@ import java.rmi.RemoteException;
 import java.security.SecureRandom;
 import java.sql.Connection;
 
-import de.ritterbach.jameica.energie.StromWasserGasPlugin;
+import de.ritterbach.jameica.energie.EnergiePlugin;
 import de.ritterbach.jameica.energie.rmi.EnergieDBService;
 import de.willuhn.jameica.system.Application;
 import de.willuhn.logging.Logger;
@@ -111,7 +111,7 @@ public class DBSupportH2Impl extends AbstractDBSupportImpl
    */
   public String getJdbcUrl()
   {
-    String url = "jdbc:h2:" + Application.getPluginLoader().getPlugin(StromWasserGasPlugin.class).getResources().getWorkPath() + "/h2db/energie";
+    String url = "jdbc:h2:" + Application.getPluginLoader().getPlugin(EnergiePlugin.class).getResources().getWorkPath() + "/h2db/energie";
 
     if (EnergieDBService.SETTINGS.getBoolean("database.driver.h2.encryption",true))
       url += ";CIPHER=" + EnergieDBService.SETTINGS.getString("database.driver.h2.encryption.algorithm","XTEA");

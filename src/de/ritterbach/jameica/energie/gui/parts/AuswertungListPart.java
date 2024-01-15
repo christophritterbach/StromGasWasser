@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TabFolder;
 
 import de.ritterbach.jameica.energie.Settings;
-import de.ritterbach.jameica.energie.StromWasserGasPlugin;
+import de.ritterbach.jameica.energie.EnergiePlugin;
 import de.ritterbach.jameica.energie.gui.views.data.Auswertung;
 import de.ritterbach.jameica.energie.gui.views.data.AuswertungsBuilder;
 import de.ritterbach.jameica.energie.rmi.Zaehler;
@@ -42,7 +42,7 @@ import de.willuhn.util.ApplicationException;
 import de.willuhn.util.I18N;
 
 public class AuswertungListPart extends TablePart implements Part {
-	private final static I18N i18n = Application.getPluginLoader().getPlugin(StromWasserGasPlugin.class).getResources().getI18N();
+	private final static I18N i18n = Application.getPluginLoader().getPlugin(EnergiePlugin.class).getResources().getI18N();
 	private Listener listener;
 	private DBService service = null;
 	private SelectInput zaehlerAuswahl = null;
@@ -58,7 +58,7 @@ public class AuswertungListPart extends TablePart implements Part {
 	public AuswertungListPart(List<Auswertung> list, Action action) throws RemoteException {
 		super(list, action);
 		this.service = Settings.getDBService();
-		this.settings = new Settings(StromWasserGasPlugin.class);
+		this.settings = new Settings(EnergiePlugin.class);
 		this.listener = new Listener() {
 			public void handleEvent(Event event) {
 				// Wenn das event "null" ist, kann es nicht von SWT ausgeloest worden sein

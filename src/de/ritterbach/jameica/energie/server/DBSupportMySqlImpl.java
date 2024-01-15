@@ -15,7 +15,7 @@ import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.text.MessageFormat;
 
-import de.ritterbach.jameica.energie.StromWasserGasPlugin;
+import de.ritterbach.jameica.energie.EnergiePlugin;
 import de.ritterbach.jameica.energie.rmi.EnergieDBService;
 import de.willuhn.jameica.messaging.BootMessage;
 import de.willuhn.jameica.system.Application;
@@ -76,7 +76,7 @@ public class DBSupportMySqlImpl extends AbstractDBSupportImpl
     File f = new File(sqlScript.getParent(),getScriptPrefix() + sqlScript.getName());
     if (f.exists())
     {
-      I18N i18n = Application.getPluginLoader().getPlugin(StromWasserGasPlugin.class).getResources().getI18N();
+      I18N i18n = Application.getPluginLoader().getPlugin(EnergiePlugin.class).getResources().getI18N();
       
       String text = i18n.tr("Bei der Verwendung von MySQL wird die Datenbank " +
           "nicht automatisch angelegt. Bitte f�hren Sie das folgende SQL-Script " +

@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 import de.ritterbach.jameica.energie.Settings;
-import de.ritterbach.jameica.energie.StromWasserGasPlugin;
+import de.ritterbach.jameica.energie.EnergiePlugin;
 import de.ritterbach.jameica.energie.rmi.Kosten;
 import de.ritterbach.jameica.energie.rmi.Zaehler;
 import de.willuhn.datasource.rmi.DBIterator;
@@ -20,7 +20,7 @@ import de.willuhn.jameica.system.Application;
 import de.willuhn.util.I18N;
 
 public class AuswertungsBuilder {
-	private final static I18N i18n = Application.getPluginLoader().getPlugin(StromWasserGasPlugin.class).getResources()
+	private final static I18N i18n = Application.getPluginLoader().getPlugin(EnergiePlugin.class).getResources()
 			.getI18N();
 	static final long ONE_HOUR = (60 * 60 * 1000L);
 	static final long ONE_DAY = ONE_HOUR * 24L;
