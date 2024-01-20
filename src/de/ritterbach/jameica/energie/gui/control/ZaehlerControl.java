@@ -36,47 +36,47 @@ public class ZaehlerControl extends AbstractControl {
 	public Input getName() throws RemoteException {
 		if (name != null)
 			return name;
-		name = new TextInput(getZaehler().getName(), 255);
-		name.setMandatory(true);
-		name.setName(Settings.i18n().tr("Zaehlername"));
-		return name;
+		this.name = new TextInput(getZaehler().getName(), 255);
+		this.name.setMandatory(true);
+		this.name.setName(Settings.i18n().tr("Zaehlername"));
+		return this.name;
 	}
 
 	public CheckboxInput getIstAktiv() throws RemoteException {
 		if (istAktiv != null)
 			return istAktiv;
-		istAktiv = new CheckboxInput(getZaehler().getIstAktiv());
-		istAktiv.setName(Settings.i18n().tr("ist_aktiv"));
+		this.istAktiv = new CheckboxInput(getZaehler().getIstAktiv());
+		this.istAktiv.setName(Settings.i18n().tr("ist_aktiv"));
 		return this.istAktiv;
 	}
 	
 	public CheckboxInput getNutztFaktor() throws RemoteException {
 		if (nutztFaktor != null)
 			return nutztFaktor;
-		nutztFaktor = new CheckboxInput(getZaehler().getNutztFaktor());
-		nutztFaktor.setName(Settings.i18n().tr("nutzt_faktor"));
+		this.nutztFaktor = new CheckboxInput(getZaehler().getNutztFaktor());
+		this.nutztFaktor.setName(Settings.i18n().tr("nutzt_faktor"));
 		return this.nutztFaktor;
 	}
 	
 	public Input getMessEinheit() throws RemoteException {
 		if (messEinheit != null)
 			return messEinheit;
-		messEinheit = new TextInput(getZaehler().getMessEinheit(), 10);
-		messEinheit.setMandatory(true);
-		messEinheit.setName(Settings.i18n().tr("Messeinheit"));
-		messEinheit.setComment(Settings.i18n().tr("Messeinheit_Comment"));
-		messEinheit.setHint(Settings.i18n().tr("Messeinheit_Hint"));
+		this.messEinheit = new TextInput(getZaehler().getMessEinheit(), 10);
+		this.messEinheit.setMandatory(true);
+		this.messEinheit.setName(Settings.i18n().tr("Messeinheit"));
+		this.messEinheit.setComment(Settings.i18n().tr("Messeinheit_Comment"));
+		this.messEinheit.setHint(Settings.i18n().tr("Messeinheit_Hint"));
 		return messEinheit;
 	}
 
 	public Input getAbleseEinheit() throws RemoteException {
 		if (ableseEinheit != null)
 			return ableseEinheit;
-		ableseEinheit = new TextInput(getZaehler().getAbleseEinheit(), 10);
-		ableseEinheit.setMandatory(true);
-		ableseEinheit.setName(Settings.i18n().tr("Ableseeinheit"));
-		ableseEinheit.setComment(Settings.i18n().tr("Ableseeinheit_Comment"));
-		ableseEinheit.setHint(Settings.i18n().tr("Ableseeinheit_Hint"));
+		this.ableseEinheit = new TextInput(getZaehler().getAbleseEinheit(), 10);
+		this.ableseEinheit.setMandatory(true);
+		this.ableseEinheit.setName(Settings.i18n().tr("Ableseeinheit"));
+		this.ableseEinheit.setComment(Settings.i18n().tr("Ableseeinheit_Comment"));
+		this.ableseEinheit.setHint(Settings.i18n().tr("Ableseeinheit_Hint"));
 		return ableseEinheit;
 	}
 

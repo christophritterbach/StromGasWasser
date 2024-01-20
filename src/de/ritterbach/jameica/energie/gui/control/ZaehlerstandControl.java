@@ -50,6 +50,7 @@ public class ZaehlerstandControl extends AbstractControl {
 			datum = new Date();
 		this.ablesedatum = new DateInput(datum, Settings.DATEFORMAT);
 		this.ablesedatum.setName(Settings.i18n().tr("Ablese_Datum"));
+		this.ablesedatum.setMandatory(true);
 		return this.ablesedatum;
 	}
 
@@ -58,9 +59,9 @@ public class ZaehlerstandControl extends AbstractControl {
 			return ableseWert;
 
 		Zaehler zaehler = Settings.getZaehler();
-		ableseWert = new DecimalInput(getZaehlerstand().getAbleseWert(), Settings.DECIMALFORMAT);
-		ableseWert.setComment(zaehler.getAbleseEinheit());
-		ableseWert.setName(Settings.i18n().tr("Ablese_Wert", getAbleseEinheit()));
+		this.ableseWert = new DecimalInput(getZaehlerstand().getAbleseWert(), Settings.DECIMALFORMAT);
+		this.ableseWert.setComment(zaehler.getAbleseEinheit());
+		this.ableseWert.setName(Settings.i18n().tr("Ablese_Wert", getAbleseEinheit()));
 		return this.ableseWert;
 	}
 
@@ -69,9 +70,9 @@ public class ZaehlerstandControl extends AbstractControl {
 			return verbrauch;
 
 		Zaehler zaehler = Settings.getZaehler();
-		verbrauch = new DecimalInput(getZaehlerstand().getVerbrauch(), Settings.DECIMALFORMAT);
-		verbrauch.setComment(zaehler.getAbleseEinheit());
-		verbrauch.setName(Settings.i18n().tr("Verbrauch", getAbleseEinheit()));
+		this.verbrauch = new DecimalInput(getZaehlerstand().getVerbrauch(), Settings.DECIMALFORMAT);
+		this.verbrauch.setComment(zaehler.getAbleseEinheit());
+		this.verbrauch.setName(Settings.i18n().tr("Verbrauch", getAbleseEinheit()));
 		return this.verbrauch;
 	}
 

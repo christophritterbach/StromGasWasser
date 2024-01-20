@@ -41,6 +41,7 @@ public class ZaehlerstandReiheControl extends AbstractControl {
 		Date datum = new Date();
 		this.zaehlerstandDatumAblesung = new DateInput(datum, Settings.DATEFORMAT);
 		this.zaehlerstandDatumAblesung.setName(Settings.i18n().tr("Ablese_Datum_Anfang"));
+		this.zaehlerstandDatumAblesung.setMandatory(true);
 		return this.zaehlerstandDatumAblesung;
 	}
 
@@ -51,6 +52,7 @@ public class ZaehlerstandReiheControl extends AbstractControl {
 		Date datum = new Date();
 		this.zaehlerstandDatumEnde = new DateInput(datum, Settings.DATEFORMAT);
 		this.zaehlerstandDatumEnde.setName(Settings.i18n().tr("Ablese_Datum_Ende"));
+		this.zaehlerstandDatumEnde.setMandatory(true);
 		return this.zaehlerstandDatumEnde;
 	}
 
@@ -59,9 +61,10 @@ public class ZaehlerstandReiheControl extends AbstractControl {
 			return zaehlerstandVerbrauch;
 
 		Zaehler zaehler = Settings.getZaehler();
-		zaehlerstandVerbrauch = new DecimalInput(BigDecimal.ZERO, Settings.DECIMALFORMAT);
-		zaehlerstandVerbrauch.setComment(zaehler.getAbleseEinheit());
-		zaehlerstandVerbrauch.setName(Settings.i18n().tr("Verbrauch"));
+		this.zaehlerstandVerbrauch = new DecimalInput(BigDecimal.ZERO, Settings.DECIMALFORMAT);
+		this.zaehlerstandVerbrauch.setComment(zaehler.getAbleseEinheit());
+		this.zaehlerstandVerbrauch.setName(Settings.i18n().tr("Verbrauch"));
+		this.zaehlerstandVerbrauch.setMandatory(true);
 		return this.zaehlerstandVerbrauch;
 	}
 
@@ -91,7 +94,7 @@ public class ZaehlerstandReiheControl extends AbstractControl {
 			Date endeDatum = (Date) getZaehlerstandDatumEnde().getValue();
 			Double ver = (Double) getZaehlerstandVerbrauch().getValue();
 			BigDecimal verbrauch = (ver == null ? new BigDecimal(0) : BigDecimal.valueOf(ver));
-			while (datum.before(endeDatum)) {
+			while (!datum.after(endeDatum)) {
 				Zaehlerstand zaehlerstand = (Zaehlerstand) Settings.getDBService().createObject(Zaehlerstand.class, null);
 				zaehlerstand.setZaehler(Settings.getZaehler());
 				zaehlerstand.setAbleseDatum(datum);

@@ -72,7 +72,7 @@ public class AuswertungListPart extends TablePart implements Part {
 		addColumn(i18n.tr("Datum"), "datum", new DateFormatter());
 		addColumn(i18n.tr("Anzahl_Tage"), "anzahlTage");
 		addColumn(i18n.tr("Anteil_Grundpreis"), "grundpreisAnteil", new CurrencyFormatter(Settings.CURRENCY, null));
-		addColumn(i18n.tr("Arbeitspreis"), "arbeitspreis", new CurrencyFormatter(Settings.CURRENCY, null));
+		addColumn(i18n.tr("Arbeitspreis_E"), "arbeitspreis", new CurrencyFormatter(Settings.CURRENCY, null));
 		addColumn(i18n.tr("Gezahlt"), "gezahlt", new CurrencyFormatter(Settings.CURRENCY, null));
 		addColumn(i18n.tr("Genutzt"), "genutzt", new CurrencyFormatter(Settings.CURRENCY, null));
 		addColumn(i18n.tr("Summe"), "summe", new CurrencyFormatter(Settings.CURRENCY, null));

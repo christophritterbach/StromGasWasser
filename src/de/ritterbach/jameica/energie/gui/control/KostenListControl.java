@@ -2,6 +2,7 @@ package de.ritterbach.jameica.energie.gui.control;
 
 import java.rmi.RemoteException;
 
+import de.ritterbach.jameica.energie.gui.action.KostenDetailAction;
 import de.ritterbach.jameica.energie.gui.parts.KostenListPart;
 import de.ritterbach.jameica.energie.rmi.Kosten;
 import de.willuhn.jameica.gui.AbstractControl;
@@ -24,8 +25,9 @@ public class KostenListControl extends AbstractControl {
 	    list = new KostenListPart(new Action() {
 			@Override
 			public void handleAction(Object context) throws ApplicationException {
-			    if (!(context instanceof Kosten))
-			        return;
+			    if (context instanceof Kosten)
+			    	new KostenDetailAction().handleAction(context);
+		        return;
 			}
 	    });
 	    return list;

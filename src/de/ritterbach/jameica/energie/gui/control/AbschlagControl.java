@@ -32,7 +32,7 @@ public class AbschlagControl extends AbstractControl {
 	private Abschlag getAbschlag() {
 		if (abschlag != null)
 			return abschlag;
-		abschlag = (Abschlag) getCurrentObject();
+		this.abschlag = (Abschlag) getCurrentObject();
 		return abschlag;
 	}
 
@@ -45,6 +45,7 @@ public class AbschlagControl extends AbstractControl {
 			datum = new Date();
 		this.abschlagDatum = new DateInput(datum, Settings.DATEFORMAT);
 		this.abschlagDatum.setName(Settings.i18n().tr("Abschlag_Datum"));
+		this.abschlagDatum.setMandatory(true);
 		return this.abschlagDatum;
 	}
 
@@ -52,17 +53,18 @@ public class AbschlagControl extends AbstractControl {
 		if (abschlagBetrag != null)
 			return abschlagBetrag;
 
-		abschlagBetrag = new DecimalInput(getAbschlag().getAbschlagBetrag(), Settings.DECIMALFORMAT);
-		abschlagBetrag.setName(Settings.i18n().tr("Abschlag_Betrag"));
-		abschlagBetrag.setComment(Settings.CURRENCY);
+		this.abschlagBetrag = new DecimalInput(getAbschlag().getAbschlagBetrag(), Settings.DECIMALFORMAT);
+		this.abschlagBetrag.setName(Settings.i18n().tr("Abschlag_Betrag"));
+		this.abschlagBetrag.setComment(Settings.CURRENCY);
+		this.abschlagBetrag.setMandatory(true);
 		return this.abschlagBetrag;
 	}
 
 	public Input getNotiz() throws RemoteException {
 		if (notiz != null)
 			return notiz;
-		notiz = new TextAreaInput(getAbschlag().getNotiz());
-		notiz.setName("");
+		this.notiz = new TextAreaInput(getAbschlag().getNotiz());
+		this.notiz.setName("");
 		return notiz;
 	}
 

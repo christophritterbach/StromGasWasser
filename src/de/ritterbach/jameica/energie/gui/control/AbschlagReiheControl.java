@@ -71,7 +71,7 @@ public class AbschlagReiheControl extends AbstractControl {
 			Date endeDatum = (Date) getAbschlagDatumEnde().getValue();
 			Double ab = (Double) getAbschlagBetrag().getValue();
 			BigDecimal betrag = (ab == null ? new BigDecimal(0) : BigDecimal.valueOf(ab));
-			while (datum.before(endeDatum)) {
+			while (!datum.after(endeDatum)) {
 				Abschlag abschlag = (Abschlag) Settings.getDBService().createObject(Abschlag.class, null);
 				abschlag.setZaehler(Settings.getZaehler());
 				abschlag.setAbschlagDatum(datum);

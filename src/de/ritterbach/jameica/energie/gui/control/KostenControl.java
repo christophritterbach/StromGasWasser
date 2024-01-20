@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 import java.rmi.RemoteException;
 import java.util.Date;
 
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+
 import de.ritterbach.jameica.energie.Settings;
 import de.ritterbach.jameica.energie.rmi.Kosten;
 import de.ritterbach.jameica.energie.rmi.Zaehler;
@@ -53,6 +56,7 @@ public class KostenControl extends AbstractControl {
 			gueltig = new Date();
 		this.gueltigVon = new DateInput(gueltig, Settings.DATEFORMAT);
 		this.gueltigVon.setName(Settings.i18n().tr("Gueltig_von"));
+		this.gueltigVon.setMandatory(true);
 		return this.gueltigVon;
 	}
 
@@ -65,6 +69,7 @@ public class KostenControl extends AbstractControl {
 			gueltig = new Date();
 		this.gueltigBis = new DateInput(gueltig, Settings.DATEFORMAT);
 		this.gueltigBis.setName(Settings.i18n().tr("Gueltig_bis"));
+		this.gueltigBis.setMandatory(true);
 		return this.gueltigBis;
 	}
 
@@ -76,6 +81,18 @@ public class KostenControl extends AbstractControl {
 		this.abschlagBis = new DateInput(abschlag, Settings.DATEFORMAT);
 		this.abschlagBis.setName(Settings.i18n().tr("Abschlag_bis"));
 		this.abschlagBis.setComment(Settings.i18n().tr("Abschlag_bis_comment"));
+		this.abschlagBis.addListener(new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				try {
+					if (getAbschlagBis() != null) {
+						abschlagBis.setValue(getGueltigBis().getValue());
+					}
+				} catch (RemoteException e) {
+				}
+				
+			}
+		});
 		return this.abschlagBis;
 	}
 
@@ -83,11 +100,12 @@ public class KostenControl extends AbstractControl {
 		if (grundpreis != null)
 			return grundpreis;
 
-		grundpreis = new DecimalInput(getKosten().getGrundpreis(), Settings.DECIMALFORMAT);
-		grundpreis.setComment(Settings.i18n().tr("{0}_pro_Jahr", Settings.CURRENCY));
-		grundpreis.setName(Settings.i18n().tr("Grundpreis"));
-		grundpreis.isMandatory();
-		grundpreis.setHint(Settings.i18n().tr("Grundpreis inkl. Steuern"));
+		this.grundpreis = new DecimalInput(getKosten().getGrundpreis(), Settings.DECIMALFORMAT);
+		this.grundpreis.setComment(Settings.i18n().tr("{0}_pro_Jahr", Settings.CURRENCY));
+		this.grundpreis.setName(Settings.i18n().tr("Grundpreis"));
+		this.grundpreis.setMandatory(true);
+		this.grundpreis.setHint(Settings.i18n().tr("Grundpreis inkl. Steuern"));
+		this.grundpreis.setValue(0d);
 		return this.grundpreis;
 	}
 
@@ -96,11 +114,11 @@ public class KostenControl extends AbstractControl {
 			return arbeitspreis;
 
 		Zaehler z = getKosten().getZaehler();
-		arbeitspreis = new DecimalInput(getKosten().getArbeitspreis(), Settings.ARBEITSPREISFORMAT);
-		arbeitspreis.setComment(Settings.i18n().tr("{0}_pro_{1}", Settings.CURRENCY, z.getMessEinheit()));
-		arbeitspreis.setName(Settings.i18n().tr("Arbeitspreis"));
-		arbeitspreis.setHint(Settings.i18n().tr("Arbeitspreis inkl. Steuern"));
-		arbeitspreis.isMandatory();
+		this.arbeitspreis = new DecimalInput(getKosten().getArbeitspreis(), Settings.ARBEITSPREISFORMAT);
+		this.arbeitspreis.setComment(Settings.i18n().tr("{0}_pro_{1}", Settings.CURRENCY, z.getMessEinheit()));
+		this.arbeitspreis.setName(Settings.i18n().tr("Arbeitspreis"));
+		this.arbeitspreis.setHint(Settings.i18n().tr("Arbeitspreis inkl. Steuern"));
+		this.arbeitspreis.setMandatory(true);
 		return this.arbeitspreis;
 	}
 
@@ -109,11 +127,12 @@ public class KostenControl extends AbstractControl {
 			return faktor;
 
 		Zaehler z = getKosten().getZaehler();
-		faktor = new DecimalInput(getKosten().getFaktor(), Settings.ARBEITSPREISFORMAT);
-		faktor.setComment(Settings.i18n().tr("{0}_pro_{1}", z.getMessEinheit(), z.getAbleseEinheit()));
-		faktor.setName(Settings.i18n().tr("Faktor"));
-		faktor.isMandatory();
-		faktor.setHint(Settings.i18n().tr("Faktor_hint"));
+		this.faktor = new DecimalInput(getKosten().getFaktor(), Settings.ARBEITSPREISFORMAT);
+		this.faktor.setComment(Settings.i18n().tr("{0}_pro_{1}", z.getMessEinheit(), z.getAbleseEinheit()));
+		this.faktor.setName(Settings.i18n().tr("Faktor"));
+		this.faktor.setMandatory(true);
+		this.faktor.setHint(Settings.i18n().tr("Faktor_hint"));
+		this.faktor.setValue(1d);
 		return this.faktor;
 	}
 

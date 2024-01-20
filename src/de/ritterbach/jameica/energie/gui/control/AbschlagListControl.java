@@ -2,6 +2,7 @@ package de.ritterbach.jameica.energie.gui.control;
 
 import java.rmi.RemoteException;
 
+import de.ritterbach.jameica.energie.gui.action.AbschlagDetailAction;
 import de.ritterbach.jameica.energie.gui.parts.AbschlagListPart;
 import de.ritterbach.jameica.energie.rmi.Abschlag;
 import de.willuhn.jameica.gui.AbstractControl;
@@ -24,8 +25,9 @@ public class AbschlagListControl extends AbstractControl {
 	    list = new AbschlagListPart(new Action() {
 			@Override
 			public void handleAction(Object context) throws ApplicationException {
-			    if (!(context instanceof Abschlag))
-			        return;
+			    if (context instanceof Abschlag)
+			    	new AbschlagDetailAction().handleAction(context);
+		        return;
 			}
 	    });
 	    return list;
